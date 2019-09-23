@@ -19,6 +19,7 @@ $pdftk = PdfForms.new
 MISDEMEANOR_CLASSES = ['A', 'B', 'C']
 FELONY_CLASSES = ['M', 'X', '1', '2', '3', '4']
 TRAFFIC_CLASSES = ['U']
+# What are N and R?
 
 def extract_header_data(history)
   {client_name: history[0][:individual], dob: history[0][:date_of_birth]}
@@ -26,7 +27,7 @@ end
 
 def parse_charge(charge_string)
   charge_elements = charge_string.split(' - ')
-  offense_class = charge_elements.pop.split(': ').last
+  offense_class = charge_elements.pop.split(': ')[1]
   charge = charge_elements.join(' - ')
   {charge: charge, offense_class: offense_class}
 end
@@ -39,7 +40,7 @@ def determine_offense_type(offense_class)
   elsif TRAFFIC_CLASSES.include?(offense_class)
     'T'
   else
-    '?'
+    nil
   end
 end
 
@@ -57,6 +58,11 @@ def build_court_event_data(court_events)
   data = {}
   court_events.each_with_index do |event, index|
     populate_basic_event_data(data, event, index)
+    if event[:disposition] == 'Pre-JANO Disposition'
+      data["#{index}_disposition_date"] = "\n#{event[:disposition_date]}"
+      data["#{index}_sentence"] = nil
+      data["#{index}_other_notes"] = 'Pre-JANO disposition. Requires manual records check.'
+    end
   end
   data
 end

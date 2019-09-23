@@ -33,10 +33,16 @@ end
 
 @logger = Logger.new(STDOUT)
 
-path_to_file = ARGV[0]
+path_to_directory = ARGV[0]
 
-history = CSV.read(path_to_file, {headers: true, header_converters: :symbol})
+Dir.glob("*.csv", base: path_to_directory ) do |filename|
+  path_to_file = "#{path_to_directory}/#{filename}"
 
-case_chart_header_data = extract_header_data(history)
+  history = CSV.read(path_to_file, {headers: true, header_converters: :symbol})
 
-create_pdf(path_to_file, case_chart_header_data)
+  case_chart_header_data = extract_header_data(history)
+
+  create_pdf(path_to_file, case_chart_header_data)
+end
+
+

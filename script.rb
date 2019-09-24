@@ -54,17 +54,61 @@ def populate_basic_event_data(data, event, index)
   data["#{index}_fmqt"] = determine_offense_type(charge_info[:offense_class])
 end
 
-def build_court_event_data(court_events)
+def populate_pre_jano_event_data(data, event, index)
+  data["#{index}_disposition_date"] = "\n#{event[:disposition_date]}"
+  data["#{index}_sentence"] = nil
+  data["#{index}_other_notes"] = "\nPre-JANO disposition. Requires manual records check."
+end
+
+def populate_dismissal_event_data(data, pending_case, index)
+  data["#{index}_is_conviction"] = 'N'
+  data["#{index}_discharge_date"] = 'N/A'
+  if pending_case
+    data["#{index}_other_notes"] = "\nPending case in Champaign Co. Expunge once no cases are pending. (Dismissal)"
+    data["#{index}_is_eligible"] = 'N'
+  else
+    data["#{index}_other_notes"] = "\nExpunge if no pending cases in other counties. (Dismissal)"
+    data["#{index}_is_eligible"] = 'Y'
+  end
+end
+
+def populate_acquittal_event_data(data, pending_case, index)
+  data["#{index}_is_conviction"] = 'N'
+  data["#{index}_discharge_date"] = 'N/A'
+  if pending_case
+    data["#{index}_other_notes"] = "\nPending case in Champaign Co. Expunge once no cases are pending. (Acquittal)"
+    data["#{index}_is_eligible"] = 'N'
+  else
+    data["#{index}_other_notes"] = "\nExpunge if no pending cases in other counties. (Acquittal)"
+    data["#{index}_is_eligible"] = 'Y'
+  end
+end
+
+def populate_court_event_data(court_events, pending_case)
   data = {}
   court_events.each_with_index do |event, index|
     populate_basic_event_data(data, event, index)
     if event[:disposition] == 'Pre-JANO Disposition'
-      data["#{index}_disposition_date"] = "\n#{event[:disposition_date]}"
-      data["#{index}_sentence"] = nil
-      data["#{index}_other_notes"] = 'Pre-JANO disposition. Requires manual records check.'
+      populate_pre_jano_event_data(data, event, index)
+    elsif event[:disposition].start_with?('Dismiss')
+      populate_dismissal_event_data(data, pending_case, index)
+    elsif event[:disposition].start_with?('Not Guilty')
+      populate_acquittal_event_data(data, pending_case, index)
     end
   end
   data
+end
+
+def has_pending_case?(history)
+  # TBD, Active status does not seem to be the right way to determine this
+  # history.each do |event|
+  #   if event[:status_description] == 'Active'
+  #     @logger.info "#{event[:individual]} has a pending case"
+  #     return true
+  #   end
+  # end
+
+  false
 end
 
 def build_output_file_name(input_file_path, index)
@@ -77,9 +121,9 @@ def create_pdf(output_file_path, data)
   @logger.info "Created #{output_file_path}"
 end
 
-def fill_case_chart(output_file_path, court_events)
+def fill_case_chart(output_file_path, court_events, pending_case)
   header_data = extract_header_data(court_events)
-  court_event_data = build_court_event_data(court_events)
+  court_event_data = populate_court_event_data(court_events, pending_case)
 
   case_chart_data = header_data.merge(court_event_data)
   create_pdf(output_file_path, case_chart_data)
@@ -93,6 +137,9 @@ Dir.glob("*.csv", base: path_to_directory ) do |filename|
   input_file_path = "#{path_to_directory}/#{filename}"
 
   history = CSV.read(input_file_path, {headers: true, header_converters: :symbol})
+
+  pending_case = has_pending_case?(history)
+
   court_event_history = history.filter do |event|
     event[:disposition_date] != nil && event[:disposition] != nil
   end
@@ -103,7 +150,7 @@ Dir.glob("*.csv", base: path_to_directory ) do |filename|
 
   court_event_chunks.each_with_index do |court_event_chunk, index|
     output_file_path = "output/#{build_output_file_name(input_file_path, index)}"
-    fill_case_chart(output_file_path, court_event_chunk, )
+    fill_case_chart(output_file_path, court_event_chunk, pending_case)
   end
 end
 

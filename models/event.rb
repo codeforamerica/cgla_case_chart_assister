@@ -3,7 +3,7 @@ Event = Struct.new(
   :case_number,
   :arrest_date,
   :arresting_agency_code,
-  :status_description,
+  :dcn,
   :charge_code,
   :charge_description,
   :offense_type,
@@ -15,7 +15,11 @@ Event = Struct.new(
   keyword_init: true) do
 
   def court_event?
-    disposition_date != nil && disposition != nil
+    case_number != nil
+  end
+
+  def pending_case?
+    court_event? && disposition == nil && disposition_date == nil
   end
 
   def pre_JANO?
@@ -30,14 +34,19 @@ Event = Struct.new(
     disposition == 'Not Guilty'
   end
 
+  def arresting_agency
+    arresting_agency_code || 'Agency Not Provided'
+  end
+
   def basic_case_chart_hash(index)
     {
       "#{index}_case_number": case_number,
+      "#{index}_class": offense_class,
+      "#{index}_fmqt": offense_type,
+      "#{index}_charges": "#{charge_code} - #{charge_description}",
       "#{index}_disposition_date": "#{disposition}\n#{disposition_date}",
       "#{index}_sentence": sentence,
-      "#{index}_charges": "#{charge_code} - #{charge_description}",
-      "#{index}_class": offense_class,
-      "#{index}_fmqt": offense_type
+      "#{index}_other_notes": "#{arresting_agency}\n",
     }
   end
 
@@ -47,13 +56,13 @@ Event = Struct.new(
       "#{index}_sentence": nil,
       "#{index}_is_eligible": nil,
       "#{index}_is_conviction": nil,
-      "#{index}_other_notes": "\nPre-JANO disposition. Requires manual records check."
+      "#{index}_other_notes": "#{arresting_agency}\nPre-JANO disposition. Requires manual records check."
     }
   end
 
   def dismissal_case_chart_hash(index, pending_case)
-    eligible_message = "\nExpunge if no pending cases in other counties. (Dismissal)"
-    pending_case_message = "\nPending case in Champaign Co. Expunge once no cases are pending. (Dismissal)"
+    eligible_message = "#{arresting_agency}\nExpunge if no pending cases in other counties. (Dismissal)"
+    pending_case_message = "#{arresting_agency}\nPending case in Champaign Co. Expunge once no cases are pending. (Dismissal)"
 
     {
       "#{index}_is_eligible": pending_case ? 'N' : 'Y',
@@ -64,8 +73,8 @@ Event = Struct.new(
   end
 
   def acquittal_case_chart_hash(index, pending_case)
-    eligible_message = "\nExpunge if no pending cases in other counties. (Acquittal)"
-    pending_case_message = "\nPending case in Champaign Co. Expunge once no cases are pending. (Acquittal)"
+    eligible_message = "#{arresting_agency}\nExpunge if no pending cases in other counties. (Acquittal)"
+    pending_case_message = "#{arresting_agency}\nPending case in Champaign Co. Expunge once no cases are pending. (Acquittal)"
 
     {
       "#{index}_is_eligible": pending_case ? 'N' : 'Y',

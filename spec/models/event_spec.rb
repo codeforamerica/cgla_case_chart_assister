@@ -2,14 +2,37 @@ require_relative '../../models/event'
 
 RSpec.describe Event do
   describe '#court_event?' do
-    it 'returns true when both the disposition date and disposition are populated' do
-      event = Event.new(disposition_date: '12-Jan-16', disposition: 'Dismissed')
+    it 'returns true when case_number is populated' do
+      event = Event.new(dcn: 'L6748494', case_number: '2007-CM-000747')
       expect(event.court_event?).to eq(true)
     end
 
-    it 'returns false when the disposition date and disposition are both empty (arrest record)' do
-      arrest_event = Event.new(status_description: '12345', disposition_date: nil, disposition: nil)
+    it 'returns false when case number is empty (arrest record)' do
+      arrest_event = Event.new(dcn: 'L6748494', case_number: nil)
       expect(arrest_event.court_event?).to eq(false)
+    end
+  end
+
+  describe '#pending_case?' do
+    context 'when the event is a court event' do
+      let(:event) { Event.new(dcn: 'L6748494', case_number: '2007-CM-000747') }
+
+      it 'returns true when neither disposition nor disposition date are populated' do
+        event.disposition = nil
+        event.disposition_date = nil
+        expect(event.pending_case?).to eq(true)
+      end
+
+      it 'returns false when disposition or disposition_date or both are populated' do
+        event.disposition = 'Guilty'
+        event.disposition_date = '3/10/17'
+        expect(event.pending_case?).to eq(false)
+      end
+    end
+
+    it 'returns false when not a court event' do
+      arrest_event = Event.new(dcn: 'L6748494', case_number: nil)
+      expect(arrest_event.pending_case?).to eq(false)
     end
   end
 
@@ -57,6 +80,7 @@ RSpec.describe Event do
     it 'returns a hash of the basic case chart information for the given index' do
       event = Event.new(
         case_number: '2005-CM-0012',
+        arresting_agency_code: 'Toon County Sheriff',
         charge_code: '9876',
         charge_description: 'Not a good thing',
         offense_type: 'F',
@@ -72,7 +96,8 @@ RSpec.describe Event do
                            "4_fmqt": 'F',
                            "4_class": '4',
                            "4_disposition_date": "Not Guilty\n10-Oct-2005",
-                           "4_sentence": 'No Sentence'
+                           "4_sentence": 'No Sentence',
+                           "4_other_notes": "Toon County Sheriff\n"
                          })
     end
   end
@@ -81,6 +106,7 @@ RSpec.describe Event do
     it 'returns a hash of some basic and eligibility case chart information for the given index' do
       event = Event.new(
         case_number: '2005-CM-0012',
+        arresting_agency_code: 'Toon County Sheriff',
         charge_code: '',
         charge_description: 'Breaking and entering',
         offense_type: nil,
@@ -95,7 +121,7 @@ RSpec.describe Event do
                            "4_sentence": nil,
                            "4_is_eligible": nil,
                            "4_is_conviction": nil,
-                           "4_other_notes": "\nPre-JANO disposition. Requires manual records check.",
+                           "4_other_notes": "Toon County Sheriff\nPre-JANO disposition. Requires manual records check.",
                          })
     end
   end
@@ -106,6 +132,7 @@ RSpec.describe Event do
       it 'returns a hash of eligibility case chart information for the given index with eligible true' do
         event = Event.new(
           case_number: '2005-CM-0012',
+          arresting_agency_code: 'Toon County Sheriff',
           charge_code: '9876',
           charge_description: 'Not a good thing',
           offense_type: 'F',
@@ -119,7 +146,7 @@ RSpec.describe Event do
                              "2_is_eligible": 'Y',
                              "2_is_conviction": 'N',
                              "2_discharge_date": 'N/A',
-                             "2_other_notes": "\nExpunge if no pending cases in other counties. (Dismissal)",
+                             "2_other_notes": "Toon County Sheriff\nExpunge if no pending cases in other counties. (Dismissal)",
                            })
       end
     end
@@ -129,6 +156,7 @@ RSpec.describe Event do
       it 'returns a hash of eligibility case chart information for the given index with eligible false' do
         event = Event.new(
           case_number: '2005-CM-0012',
+          arresting_agency_code: 'Toon County Sheriff',
           charge_code: '9876',
           charge_description: 'Not a good thing',
           offense_type: 'F',
@@ -142,7 +170,7 @@ RSpec.describe Event do
                              "2_is_eligible": 'N',
                              "2_is_conviction": 'N',
                              "2_discharge_date": 'N/A',
-                             "2_other_notes": "\nPending case in Champaign Co. Expunge once no cases are pending. (Dismissal)",
+                             "2_other_notes": "Toon County Sheriff\nPending case in Champaign Co. Expunge once no cases are pending. (Dismissal)",
                            })
       end
     end
@@ -154,6 +182,7 @@ RSpec.describe Event do
       it 'returns a hash of eligibility case chart information for the given index with eligible true' do
         event = Event.new(
           case_number: '2005-CM-0012',
+          arresting_agency_code: 'Toon County Sheriff',
           charge_code: '9876',
           charge_description: 'Not a good thing',
           offense_type: 'F',
@@ -167,7 +196,7 @@ RSpec.describe Event do
                              "2_is_eligible": 'Y',
                              "2_is_conviction": 'N',
                              "2_discharge_date": 'N/A',
-                             "2_other_notes": "\nExpunge if no pending cases in other counties. (Acquittal)",
+                             "2_other_notes": "Toon County Sheriff\nExpunge if no pending cases in other counties. (Acquittal)",
                            })
       end
     end
@@ -177,6 +206,7 @@ RSpec.describe Event do
       it 'returns a hash of eligibility case chart information for the given index with eligible false' do
         event = Event.new(
           case_number: '2005-CM-0012',
+          arresting_agency_code: 'Toon County Sheriff',
           charge_code: '9876',
           charge_description: 'Not a good thing',
           offense_type: 'F',
@@ -190,10 +220,9 @@ RSpec.describe Event do
                              "2_is_eligible": 'N',
                              "2_is_conviction": 'N',
                              "2_discharge_date": 'N/A',
-                             "2_other_notes": "\nPending case in Champaign Co. Expunge once no cases are pending. (Acquittal)",
+                             "2_other_notes": "Toon County Sheriff\nPending case in Champaign Co. Expunge once no cases are pending. (Acquittal)",
                            })
       end
     end
   end
-
 end

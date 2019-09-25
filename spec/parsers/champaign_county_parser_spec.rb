@@ -7,9 +7,9 @@ RSpec.describe ChampaignCountyParser do
       fake_row = {
         individual: 'CHIPMUNK, ALVIN',
         date_of_birth: '02-May-85',
-        arresting_agency: nil,
+        police_agency: 'Toon County Sheriff',
         case_number: '2007-CM-000747',
-        status_description: 'Closed',
+        dcn: 'L6700000',
         date_filed: '05-Jul-2007',
         charge: '720 5/21-1(1)(a) - Knowingly Damage Prop<$300 - Class: A',
         disposition_date: '18-Sep-2007',
@@ -26,8 +26,8 @@ RSpec.describe ChampaignCountyParser do
       expect(event.central_booking_number).to eq(nil)
       expect(event.case_number).to eq('2007-CM-000747')
       expect(event.arrest_date).to eq(nil)
-      expect(event.arresting_agency_code).to eq(nil)
-      expect(event.status_description).to eq('Closed')
+      expect(event.arresting_agency_code).to eq('Toon County Sheriff')
+      expect(event.dcn).to eq('L6700000')
       expect(event.charge_code).to eq('720 5/21-1(1)(a)')
       expect(event.charge_description).to eq('Knowingly Damage Prop<$300')
       expect(event.offense_type).to eq('M')

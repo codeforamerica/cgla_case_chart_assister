@@ -2,7 +2,7 @@ require_relative '../models/event'
 require_relative '../models/history'
 
 # CSV Schema
-# { individual, date_of_birth, arresting_agency, case_number, status_description,
+# { individual, date_of_birth, police_agency, case_number, dcn,
 #   date_filed, charge, disposition_date, disposition, sentence, balance, conviction, eligibility, wp, notes }
 
 MISDEMEANOR_CLASSES = ['A', 'B', 'C']
@@ -23,7 +23,8 @@ class ChampaignCountyParser
     charge_info = parse_charge(row[:charge])
     Event.new(
       case_number: row[:case_number],
-      status_description: row[:status_description],
+      dcn: row[:dcn],
+      arresting_agency_code: row[:police_agency],
       charge_code: charge_info[:charge_code],
       charge_description: charge_info[:charge_description],
       offense_type: determine_offense_type(charge_info[:offense_class]),

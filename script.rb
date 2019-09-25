@@ -96,7 +96,7 @@ Dir.glob("*.csv", base: path_to_directory) do |filename|
 
   history = parser.parse_history(history_rows)
 
-  pending_case = history.pending_case?
+  pending_case = history.has_pending_case?
 
   case_chart_header_data = history.case_chart_headers_hash
 

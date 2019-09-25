@@ -46,6 +46,17 @@ def populate_court_event_data(court_events, pending_case)
   data
 end
 
+def populate_basic_court_event_data(court_events, pending_case)
+  data = {}
+  court_events.each_with_index do |event, index|
+    data = populate_basic_event_data(data, event, index)
+    if event.pre_JANO?
+      data = populate_pre_jano_event_data(data, event, index)
+    end
+  end
+  data
+end
+
 def build_output_file_name(input_file_path, index)
   input_file_name = input_file_path.split('/').last.split('.').first
   "#{input_file_name}_case_chart_#{index}.pdf"
@@ -56,8 +67,17 @@ def create_pdf(output_file_path, data)
   @logger.info "Created #{output_file_path}"
 end
 
-def fill_case_chart(output_file_path, header_data, court_events, pending_case)
+def fill_eligibility_case_chart(output_file_name, header_data, court_events, pending_case)
+  output_file_path = "output/with_eligibility/#{output_file_name}"
   court_event_data = populate_court_event_data(court_events, pending_case)
+
+  case_chart_data = header_data.merge(court_event_data)
+  create_pdf(output_file_path, case_chart_data)
+end
+
+def fill_basic_case_chart(output_file_name, header_data, court_events, pending_case)
+  output_file_path = "output/basic_info/#{output_file_name}"
+  court_event_data = populate_basic_court_event_data(court_events, pending_case)
 
   case_chart_data = header_data.merge(court_event_data)
   create_pdf(output_file_path, case_chart_data)
@@ -89,8 +109,9 @@ Dir.glob("*.csv", base: path_to_directory) do |filename|
   court_event_chunks = sorted_court_history.each_slice(10)
 
   court_event_chunks.each_with_index do |court_event_chunk, index|
-    output_file_path = "output/#{build_output_file_name(input_file_path, index)}"
-    fill_case_chart(output_file_path, case_chart_header_data, court_event_chunk, pending_case)
+    output_file_name = "#{build_output_file_name(input_file_path, index)}"
+    fill_basic_case_chart(output_file_name, case_chart_header_data, court_event_chunk, pending_case)
+    fill_eligibility_case_chart(output_file_name, case_chart_header_data, court_event_chunk, pending_case)
   end
 end
 

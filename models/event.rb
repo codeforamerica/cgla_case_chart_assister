@@ -23,15 +23,15 @@ Event = Struct.new(
   end
 
   def pre_JANO?
-    disposition == 'Pre-JANO Disposition'
+    court_event? && disposition == 'Pre-JANO Disposition'
   end
 
   def dismissed?
-    disposition.start_with?('Dismiss')
+    court_event? && disposition.start_with?('Dismiss')
   end
 
   def acquitted?
-    disposition == 'Not Guilty'
+    court_event? && disposition == 'Not Guilty'
   end
 
   def eligible_for_expungement?
@@ -75,6 +75,19 @@ Event = Struct.new(
       "#{index}_other_notes": pending_case ? pending_case_message : eligible_message,
     }
   end
+
+  def set_expungement_eligibility_on_csv_row(row, pending_case)
+    eligible_message = "Expunge if no pending cases in other counties. #{expungement_type}"
+    pending_case_message = "Pending case in Champaign Co. Expunge once no cases are pending. #{expungement_type}"
+
+    row[:conviction] = 'N'
+    row[:eligibility] = pending_case ? 'N' : 'E'
+    row[:wp] = pending_case ? 'Y' : 'N'
+    row[:notes] = pending_case ? pending_case_message : eligible_message
+    row
+  end
+
+  private
 
   def expungement_type
     if dismissed?

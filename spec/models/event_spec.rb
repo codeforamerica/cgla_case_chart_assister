@@ -15,7 +15,7 @@ RSpec.describe Event do
 
   describe '#pending_case?' do
     context 'when the event is a court event' do
-      let(:event) { Event.new(dcn: 'L6748494', case_number: '2007-CM-000747') }
+      let(:event) {Event.new(dcn: 'L6748494', case_number: '2007-CM-000747')}
 
       it 'returns true when neither disposition nor disposition date are populated' do
         event.disposition = nil
@@ -37,87 +37,112 @@ RSpec.describe Event do
   end
 
   describe 'pre_JANO?' do
-    it 'returns true when the disposition is pre-JANO' do
-      event = Event.new(disposition: 'Pre-JANO Disposition')
-      expect(event.pre_JANO?).to eq(true)
+    context 'when it is a court event' do
+      it 'returns true when the disposition is pre-JANO' do
+        event = Event.new(disposition: 'Pre-JANO Disposition', case_number: '12345')
+        expect(event.pre_JANO?).to eq(true)
+      end
+
+      it 'returns false when the disposition is anything else' do
+        event = Event.new(disposition: 'some other string', case_number: '12345')
+        expect(event.pre_JANO?).to eq(false)
+      end
     end
 
-    it 'returns false when the disposition is anything else' do
-      event = Event.new(disposition: 'some other string')
-      expect(event.pre_JANO?).to eq(false)
+    context 'when it is not a court event' do
+      it 'returns false' do
+        event = Event.new(disposition: 'Pre-JANO Disposition', case_number: nil)
+        expect(event.pre_JANO?).to eq(false)
+      end
     end
   end
 
   describe 'dismissed?' do
-    it 'returns true when the disposition is some form of dismissal' do
-      event1 = Event.new(disposition: 'Dismissed')
-      event2 = Event.new(disposition: 'Dismiss/State Motion')
-      event3 = Event.new(disposition: 'Dismiss/Want of Prosecution')
-      expect(event1.dismissed?).to eq(true)
-      expect(event2.dismissed?).to eq(true)
-      expect(event3.dismissed?).to eq(true)
+    context 'when it is a court event' do
+      it 'returns true when the disposition is some form of dismissal' do
+        event1 = Event.new(disposition: 'Dismissed', case_number: '12345')
+        event2 = Event.new(disposition: 'Dismiss/State Motion', case_number: '12345')
+        event3 = Event.new(disposition: 'Dismiss/Want of Prosecution', case_number: '12345')
+        expect(event1.dismissed?).to eq(true)
+        expect(event2.dismissed?).to eq(true)
+        expect(event3.dismissed?).to eq(true)
+      end
+
+      it 'returns false when the disposition is anything else' do
+        event = Event.new(disposition: 'some other string', case_number: '12345')
+        expect(event.dismissed?).to eq(false)
+      end
     end
 
-    it 'returns false when the disposition is anything else' do
-      event = Event.new(disposition: 'some other string')
-      expect(event.dismissed?).to eq(false)
+    context 'when it is not a court event' do
+      it 'returns false' do
+        event1 = Event.new(disposition: 'Dismissed', case_number: nil)
+        event2 = Event.new(disposition: 'Dismiss/State Motion', case_number: nil)
+        event3 = Event.new(disposition: 'Dismiss/Want of Prosecution', case_number: nil)
+        expect(event1.dismissed?).to eq(false)
+        expect(event2.dismissed?).to eq(false)
+        expect(event3.dismissed?).to eq(false)
+      end
     end
+
   end
 
   describe 'acquitted?' do
-    it 'returns true when the disposition is Not Guilty' do
-      event = Event.new(disposition: 'Not Guilty')
-      expect(event.acquitted?).to eq(true)
+    context 'when it is a court event' do
+      it 'returns true when the disposition is Not Guilty' do
+        event = Event.new(disposition: 'Not Guilty', case_number: '12345')
+        expect(event.acquitted?).to eq(true)
+      end
+
+      it 'returns false when the disposition is anything else' do
+        event = Event.new(disposition: 'some other string', case_number: '12345')
+        expect(event.acquitted?).to eq(false)
+      end
     end
 
-    it 'returns false when the disposition is anything else' do
-      event = Event.new(disposition: 'some other string')
-      expect(event.acquitted?).to eq(false)
-    end
-  end
-
-  describe 'dismissed?' do
-    it 'returns true when the disposition is some form of dismissal' do
-      event1 = Event.new(disposition: 'Dismissed')
-      event2 = Event.new(disposition: 'Dismiss/State Motion')
-      event3 = Event.new(disposition: 'Dismiss/Want of Prosecution')
-      expect(event1.dismissed?).to eq(true)
-      expect(event2.dismissed?).to eq(true)
-      expect(event3.dismissed?).to eq(true)
-    end
-
-    it 'returns false when the disposition is anything else' do
-      event = Event.new(disposition: 'some other string')
-      expect(event.dismissed?).to eq(false)
+    context 'when it is not a court event' do
+      it 'returns false' do
+        event = Event.new(disposition: 'Not Guilty', case_number: nil)
+        expect(event.acquitted?).to eq(false)
+      end
     end
   end
 
   describe 'eligible_for_expungement?' do
-    context 'when the offense the is "T" (traffic)' do
-      it 'returns false when the event was dismissed' do
-        event = Event.new(disposition: 'Dismissed', offense_type: 'T')
-        expect(event.eligible_for_expungement?).to eq(false)
+    context 'when it is a court event' do
+      context 'when the offense the is "T" (traffic)' do
+        it 'returns false when the event was dismissed' do
+          event = Event.new(disposition: 'Dismissed', offense_type: 'T', case_number: '12345')
+          expect(event.eligible_for_expungement?).to eq(false)
+        end
+
+        it 'returns false when the event was acquitted' do
+          event = Event.new(disposition: 'Not Guilty', offense_type: 'T', case_number: '12345')
+          expect(event.eligible_for_expungement?).to eq(false)
+        end
       end
 
-      it 'returns false when the event was acquitted' do
-        event = Event.new(disposition: 'Not Guilty', offense_type: 'T')
+      it 'returns true when the event was dismissed' do
+        event = Event.new(disposition: 'Dismissed', offense_type: 'F', case_number: '12345')
+        expect(event.eligible_for_expungement?).to eq(true)
+      end
+
+      it 'returns true when the event was acquitted' do
+        event = Event.new(disposition: 'Not Guilty', offense_type: 'F', case_number: '12345')
+        expect(event.eligible_for_expungement?).to eq(true)
+      end
+
+      it 'returns false when the disposition is anything else' do
+        event = Event.new(disposition: 'some other string', offense_type: 'F', case_number: '12345')
         expect(event.eligible_for_expungement?).to eq(false)
       end
     end
 
-    it 'returns true when the event was dismissed' do
-      event = Event.new(disposition: 'Dismissed', offense_type: 'F')
-      expect(event.eligible_for_expungement?).to eq(true)
-    end
-
-    it 'returns true when the event was acquitted' do
-      event = Event.new(disposition: 'Not Guilty', offense_type: 'F')
-      expect(event.eligible_for_expungement?).to eq(true)
-    end
-
-    it 'returns false when the disposition is anything else' do
-      event = Event.new(disposition: 'some other string', offense_type: 'F')
-      expect(event.eligible_for_expungement?).to eq(false)
+    context 'when it is not a court event' do
+      it 'returns false' do
+        event = Event.new(disposition: 'Dismissed', offense_type: 'F', case_number: nil)
+        expect(event.eligible_for_expungement?).to eq(false)
+      end
     end
   end
 
@@ -173,7 +198,7 @@ RSpec.describe Event do
 
   describe 'expungement_case_chart_hash' do
     context 'when pending_case is false' do
-      let(:pending_case) { false }
+      let(:pending_case) {false}
       it 'returns a hash of eligibility case chart information for the given disposition type and index' do
         dismissal = Event.new(
           case_number: '2005-CM-0012',
@@ -201,11 +226,11 @@ RSpec.describe Event do
         acquittal_hash = acquittal.expungement_case_chart_hash(2, pending_case)
 
         expect(dismissal_hash).to eq({
-                             "2_is_eligible": 'E',
-                             "2_is_conviction": 'N',
-                             "2_discharge_date": 'N/A',
-                             "2_other_notes": "Toon County Sheriff\nExpunge if no pending cases in other counties. (Dismissal)",
-                           })
+                                       "2_is_eligible": 'E',
+                                       "2_is_conviction": 'N',
+                                       "2_discharge_date": 'N/A',
+                                       "2_other_notes": "Toon County Sheriff\nExpunge if no pending cases in other counties. (Dismissal)",
+                                     })
 
         expect(acquittal_hash).to eq({
                                        "2_is_eligible": 'E',
@@ -217,7 +242,7 @@ RSpec.describe Event do
     end
 
     context 'when pending_case is true' do
-      let(:pending_case) { true }
+      let(:pending_case) {true}
       it 'returns a hash of eligibility case chart information for the given index with eligible false' do
         event = Event.new(
           case_number: '2005-CM-0012',
@@ -237,6 +262,128 @@ RSpec.describe Event do
                              "2_discharge_date": 'N/A',
                              "2_other_notes": "Toon County Sheriff\nPending case in Champaign Co. Expunge once no cases are pending. (Dismissal)",
                            })
+      end
+    end
+  end
+
+  describe 'set_expungement_eligibility_on_csv_row' do
+    context 'when pending_case is false' do
+      let(:pending_case) {false}
+      it 'returns the csv hash with eligibility information populated for the given disposition type' do
+        dismissal_row = {
+          case_number: '2005-CM-0012',
+          charge: '9876 - Not a good thing - Class: 4',
+          disposition: 'Dismissed'
+        }
+        dismissal = Event.new(
+          case_number: '2005-CM-0012',
+          arresting_agency_code: 'Toon County Sheriff',
+          charge_code: '9876',
+          charge_description: 'Not a good thing',
+          offense_type: 'F',
+          offense_class: '4',
+          disposition: 'Dismissed',
+          disposition_date: '10-Oct-2005',
+          sentence: 'No Sentence')
+
+        acquittal_row = {
+          case_number: '2005-CM-0012',
+          charge: '9876 - Not a good thing - Class: 4',
+          disposition: 'Not Guilty'
+        }
+        acquittal = Event.new(
+          case_number: '2005-CM-0012',
+          arresting_agency_code: 'Toon County Sheriff',
+          charge_code: '9876',
+          charge_description: 'Not a good thing',
+          offense_type: 'F',
+          offense_class: '4',
+          disposition: 'Not Guilty',
+          disposition_date: '10-Oct-2005',
+          sentence: 'No Sentence')
+
+        dismissal_hash = dismissal.set_expungement_eligibility_on_csv_row(dismissal_row, pending_case)
+        acquittal_hash = acquittal.set_expungement_eligibility_on_csv_row(acquittal_row, pending_case)
+
+        expect(dismissal_hash).to eq({
+                                       case_number: '2005-CM-0012',
+                                       charge: '9876 - Not a good thing - Class: 4',
+                                       disposition: 'Dismissed',
+                                       eligibility: 'E',
+                                       conviction: 'N',
+                                       wp: 'N',
+                                       notes: "Expunge if no pending cases in other counties. (Dismissal)",
+                                     })
+
+        expect(acquittal_hash).to eq({
+                                       case_number: '2005-CM-0012',
+                                       charge: '9876 - Not a good thing - Class: 4',
+                                       disposition: 'Not Guilty',
+                                       eligibility: 'E',
+                                       conviction: 'N',
+                                       wp: 'N',
+                                       notes: "Expunge if no pending cases in other counties. (Acquittal)",
+                                     })
+      end
+    end
+
+    context 'when pending_case is true' do
+      let(:pending_case) {true}
+      it 'returns the csv hash with eligibility set to false for the given disposition type' do
+        dismissal_row = {
+          case_number: '2005-CM-0012',
+          charge: '9876 - Not a good thing - Class: 4',
+          disposition: 'Dismissed'
+        }
+        dismissal = Event.new(
+          case_number: '2005-CM-0012',
+          arresting_agency_code: 'Toon County Sheriff',
+          charge_code: '9876',
+          charge_description: 'Not a good thing',
+          offense_type: 'F',
+          offense_class: '4',
+          disposition: 'Dismissed',
+          disposition_date: '10-Oct-2005',
+          sentence: 'No Sentence')
+
+        acquittal_row = {
+          case_number: '2005-CM-0012',
+          charge: '9876 - Not a good thing - Class: 4',
+          disposition: 'Not Guilty'
+        }
+        acquittal = Event.new(
+          case_number: '2005-CM-0012',
+          arresting_agency_code: 'Toon County Sheriff',
+          charge_code: '9876',
+          charge_description: 'Not a good thing',
+          offense_type: 'F',
+          offense_class: '4',
+          disposition: 'Not Guilty',
+          disposition_date: '10-Oct-2005',
+          sentence: 'No Sentence')
+
+        dismissal_hash = dismissal.set_expungement_eligibility_on_csv_row(dismissal_row, pending_case)
+        acquittal_hash = acquittal.set_expungement_eligibility_on_csv_row(acquittal_row, pending_case)
+
+        expect(dismissal_hash).to eq({
+                                       case_number: '2005-CM-0012',
+                                       charge: '9876 - Not a good thing - Class: 4',
+                                       disposition: 'Dismissed',
+                                       eligibility: 'N',
+                                       conviction: 'N',
+                                       wp: 'Y',
+                                       notes: "Pending case in Champaign Co. Expunge once no cases are pending. (Dismissal)",
+                                     })
+
+        expect(acquittal_hash).to eq({
+                                       case_number: '2005-CM-0012',
+                                       charge: '9876 - Not a good thing - Class: 4',
+                                       disposition: 'Not Guilty',
+                                       eligibility: 'N',
+                                       conviction: 'N',
+                                       wp: 'Y',
+                                       notes: "Pending case in Champaign Co. Expunge once no cases are pending. (Acquittal)",
+                                     })
       end
     end
   end

@@ -62,7 +62,7 @@ def create_pdf(output_file_path, data)
 end
 
 def fill_eligibility_case_chart(output_file_name, header_data, court_events, pending_case)
-  output_file_path = "output/with_eligibility/#{output_file_name}"
+  output_file_path = "output/pdf/with_eligibility/#{output_file_name}"
   court_event_data = populate_court_event_data(court_events, pending_case)
 
   case_chart_data = header_data.merge(court_event_data)
@@ -70,7 +70,7 @@ def fill_eligibility_case_chart(output_file_name, header_data, court_events, pen
 end
 
 def fill_basic_case_chart(output_file_name, header_data, court_events, pending_case)
-  output_file_path = "output/basic_info/#{output_file_name}"
+  output_file_path = "output/pdf/basic_info/#{output_file_name}"
   court_event_data = populate_basic_court_event_data(court_events, pending_case)
 
   case_chart_data = header_data.merge(court_event_data)

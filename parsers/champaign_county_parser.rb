@@ -3,7 +3,8 @@ require_relative '../models/history'
 
 # CSV Schema
 # { individual, date_of_birth, police_agency, case_number, dcn,
-#   date_filed, charge, disposition_date, disposition, sentence, balance, conviction, eligibility, wp, notes }
+#   date_filed, charge, disposition_date, disposition, sentence, balance,
+#   conviction, eligibility, wp, notes }
 
 MISDEMEANOR_CLASSES = ['A', 'B', 'C']
 FELONY_CLASSES = ['M', 'X', '1', '2', '3', '4']

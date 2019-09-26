@@ -23,12 +23,8 @@ def populate_pre_jano_event_data(data, event, index)
   data.merge(event.pre_jano_case_chart_hash(index))
 end
 
-def populate_dismissal_event_data(data, event, pending_case, index)
-  data.merge(event.dismissal_case_chart_hash(index, pending_case))
-end
-
-def populate_acquittal_event_data(data, event, pending_case, index)
-  data.merge(event.acquittal_case_chart_hash(index, pending_case))
+def populate_expungement_event_data(data, event, pending_case, index)
+  data.merge(event.expungement_case_chart_hash(index, pending_case))
 end
 
 def populate_court_event_data(court_events, pending_case)
@@ -37,10 +33,8 @@ def populate_court_event_data(court_events, pending_case)
     data = populate_basic_event_data(data, event, index)
     if event.pre_JANO?
       data = populate_pre_jano_event_data(data, event, index)
-    elsif event.dismissed?
-      data = populate_dismissal_event_data(data, event, pending_case, index)
-    elsif event.acquitted?
-      data = populate_acquittal_event_data(data, event, pending_case, index)
+    elsif event.eligible_for_expungement?
+      data = populate_expungement_event_data(data, event, pending_case, index)
     end
   end
   data

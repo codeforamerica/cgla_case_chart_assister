@@ -34,6 +34,10 @@ Event = Struct.new(
     disposition == 'Not Guilty'
   end
 
+  def eligible_for_expungement?
+    (dismissed? || acquitted?) && offense_type != 'T'
+  end
+
   def arresting_agency
     arresting_agency_code || 'Agency Not Provided'
   end
@@ -60,28 +64,24 @@ Event = Struct.new(
     }
   end
 
-  def dismissal_case_chart_hash(index, pending_case)
-    eligible_message = "#{arresting_agency}\nExpunge if no pending cases in other counties. (Dismissal)"
-    pending_case_message = "#{arresting_agency}\nPending case in Champaign Co. Expunge once no cases are pending. (Dismissal)"
+  def expungement_case_chart_hash(index, pending_case)
+    eligible_message = "#{arresting_agency}\nExpunge if no pending cases in other counties. #{expungement_type}"
+    pending_case_message = "#{arresting_agency}\nPending case in Champaign Co. Expunge once no cases are pending. #{expungement_type}"
 
     {
-      "#{index}_is_eligible": pending_case ? 'N' : 'Y',
+      "#{index}_is_eligible": pending_case ? 'N' : 'E',
       "#{index}_is_conviction": 'N',
       "#{index}_discharge_date": 'N/A',
       "#{index}_other_notes": pending_case ? pending_case_message : eligible_message,
     }
   end
 
-  def acquittal_case_chart_hash(index, pending_case)
-    eligible_message = "#{arresting_agency}\nExpunge if no pending cases in other counties. (Acquittal)"
-    pending_case_message = "#{arresting_agency}\nPending case in Champaign Co. Expunge once no cases are pending. (Acquittal)"
-
-    {
-      "#{index}_is_eligible": pending_case ? 'N' : 'Y',
-      "#{index}_is_conviction": 'N',
-      "#{index}_discharge_date": 'N/A',
-      "#{index}_other_notes": pending_case ? pending_case_message : eligible_message,
-    }
+  def expungement_type
+    if dismissed?
+      '(Dismissal)'
+    elsif acquitted?
+      '(Acquittal)'
+    end
   end
 end
 

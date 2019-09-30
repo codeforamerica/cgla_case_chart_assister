@@ -1,4 +1,5 @@
 require_relative '../models/event'
+require_relative '../models/court_case'
 require_relative '../models/history'
 
 # CSV Schema
@@ -13,10 +14,12 @@ TRAFFIC_CLASSES = ['U']
 
 class ChampaignCountyParser
   def parse_history(rows)
+    events = rows.map {|row| parse_event(row)}
     History.new(
       person_name: rows[0][:individual],
       dob: rows[0][:date_of_birth],
-      events: rows.map {|row| parse_event(row)}
+      events: events,
+      court_cases: parse_court_cases(events)
     )
   end
 
@@ -36,7 +39,26 @@ class ChampaignCountyParser
     )
   end
 
+  def parse_court_cases(events)
+    events_by_case_number = group_by_case_number(events)
+    events_by_case_number.map do |case_number, events_for_case|
+      CourtCase.new(case_number: case_number, events: events_for_case)
+    end
+  end
+
   private
+
+  def group_by_case_number(events)
+    case_number_map = {}
+    events.filter{|e| e.court_event?}.each do |e|
+      if case_number_map[e.case_number].nil?
+        case_number_map[e.case_number] = [e]
+      else
+        case_number_map[e.case_number] << e
+      end
+    end
+    case_number_map
+  end
 
   def parse_charge(charge_string)
       offense_class = nil

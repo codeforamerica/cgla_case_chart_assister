@@ -30,7 +30,7 @@ path_to_directory = ARGV[0]
 Dir.glob("*.csv", base: path_to_directory) do |filename|
   input_file_path = "#{path_to_directory}/#{filename}"
 
-  history_rows = CSV.read(input_file_path, {headers: true, header_converters: :symbol})
+  history_rows = CSV.read(input_file_path, { headers: true, header_converters: :symbol })
 
   parser = ChampaignCountyParser.new
 
@@ -42,9 +42,11 @@ Dir.glob("*.csv", base: path_to_directory) do |filename|
     output_csv << history_rows.headers
 
     history.events.each_with_index do |event, index|
-      input_row = history_rows[index]
-      output_row = populate_eligibility(input_row, event, pending_case)
-      output_csv << output_row
+      unless event.offense_class == 'U'
+        input_row = history_rows[index]
+        output_row = populate_eligibility(input_row, event, pending_case)
+        output_csv << output_row
+      end
     end
   end
 end

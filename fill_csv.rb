@@ -15,8 +15,8 @@ def build_output_file_path(input_file_path)
   "output/csv/#{input_file_name}_case_chart.csv"
 end
 
-def populate_eligibility(input_row, event, pending_case)
-  if event.eligible_for_expungement?
+def populate_eligibility(input_row, event, pending_case, history)
+  if event.eligible_for_expungement? && history.court_cases.find{ |c| c.case_number == event.case_number}.all_expungable?
     event.set_expungement_eligibility_on_csv_row(input_row, pending_case)
   else
     input_row
@@ -44,7 +44,7 @@ Dir.glob("*.csv", base: path_to_directory) do |filename|
     history.events.each_with_index do |event, index|
       unless event.offense_class == 'U'
         input_row = history_rows[index]
-        output_row = populate_eligibility(input_row, event, pending_case)
+        output_row = populate_eligibility(input_row, event, pending_case, history)
         output_csv << output_row
       end
     end

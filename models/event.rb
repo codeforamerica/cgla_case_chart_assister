@@ -1,3 +1,5 @@
+require_relative '../constants/disqualified_code_sections'
+
 Event = Struct.new(
   :central_booking_number,
   :case_number,
@@ -34,8 +36,34 @@ Event = Struct.new(
     court_event? && disposition == 'Not Guilty'
   end
 
+  def conviction?
+    court_event? && disposition == 'Guilty'
+  end
+
+  def sealable_code_section?
+    court_event? && !(VICTIMS_COMPENSATION_CODE_SECTION_MATCHER.match(charge_code) ||
+      DUI_SECTION_MATCHER.match(charge_code) ||
+      RECKLESS_DRIVING_CODE_SECTION_MATCHER.match(charge_code) ||
+      ANIMAL_CRUELTY_CODE_SECTION_MATCHER.match(charge_code) ||
+      DOG_FIGHTING_CODE_SECTION_MATCHER.match(charge_code) ||
+      DOMESTIC_BATTERY_CODE_SECTIONS_MATCHER.match(charge_code) ||
+      NO_CONTACT_CODE_SECTIONS_MATCHER.match(charge_code) ||
+      SEX_ABUSE_CODE_SECTIONS_MATCHER.match(charge_code) ||
+      disqualified_sex_crime?)
+  end
+
+  def disqualified_sex_crime?
+    match_result = SEX_CRIME_CODE_SECTIONS_MATCHER.match(charge_code)
+    !(match_result.nil? ||
+      ALLOWED_SEX_CRIME_SUBSECTIONS.include?(match_result[:subsection]))
+  end
+
   def eligible_for_expungement?
     (dismissed? || acquitted?) && offense_type != 'T'
+  end
+
+  def eligible_for_sealing?
+    sealable_code_section? && offense_type != 'T'
   end
 
   def arresting_agency

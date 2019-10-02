@@ -40,6 +40,10 @@ Event = Struct.new(
     court_event? && disposition == 'Guilty'
   end
 
+  def fill_eligibility_info?
+    dismissed? || acquitted? || conviction?
+  end
+
   def sealable_code_section?
     court_event? && !(VICTIMS_COMPENSATION_CODE_SECTION_MATCHER.match(charge_code) ||
       DUI_SECTION_MATCHER.match(charge_code) ||
@@ -112,6 +116,28 @@ Event = Struct.new(
     row[:eligibility] = pending_case ? 'N' : 'E'
     row[:wp] = pending_case ? 'Y' : 'N'
     row[:notes] = pending_case ? pending_case_message : eligible_message
+    row
+  end
+
+  def set_sealable_eligibility_on_csv_row(row, pending_case)
+    eligible_message = "Charge eligible for sealing, no pending case in Champaign County. Seal if not in waiting period and no pending cases in other counties."
+    pending_case_message = "Charge eligible for sealing, but pending case detected in Champaign County."
+
+    row[:conviction] = conviction? ? 'Y' : 'N'
+    row[:eligibility] = pending_case ? 'N' : 'S'
+    row[:wp] = pending_case ? 'Y' : 'TBD'
+    row[:notes] = pending_case ? pending_case_message : eligible_message
+    row
+  end
+
+  def set_disqualified_eligibility_on_csv_row(row)
+    disqualified_event_message = "This charge is permanently ineligible for sealing."
+    disqualified_case_message = "Another charge in this case is permanently ineligible for sealing."
+
+    row[:conviction] = conviction? ? 'Y' : 'N'
+    row[:eligibility] = 'N'
+    row[:wp] = 'N/A'
+    row[:notes] = eligible_for_sealing? ? disqualified_case_message : disqualified_event_message
     row
   end
 

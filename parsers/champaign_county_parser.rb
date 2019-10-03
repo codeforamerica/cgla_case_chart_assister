@@ -29,13 +29,18 @@ class ChampaignCountyParser
       case_number: row[:case_number],
       dcn: row[:dcn],
       arresting_agency_code: row[:police_agency],
+      arrest_date: row[:date_filed],
       charge_code: charge_info[:charge_code],
       charge_description: charge_info[:charge_description],
       offense_type: determine_offense_type(charge_info[:offense_class]),
       offense_class: charge_info[:offense_class],
       disposition: row[:disposition],
       disposition_date: row[:disposition_date],
-      sentence: row[:sentence]
+      sentence: row[:sentence],
+      conviction: row[:conviction],
+      eligibility: row[:eligibility],
+      waiting_period: row[:wp],
+      notes: row[:notes]
     )
   end
 

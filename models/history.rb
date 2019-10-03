@@ -12,4 +12,8 @@ History = Struct.new(:person_name, :ir_number, :dob, :events, :court_cases, keyw
   def case_chart_headers_hash
     {client_name: person_name, IR_number: ir_number, dob: dob}
   end
+
+  def arrests
+    events.filter{|e| !e.court_event?}
+  end
 end

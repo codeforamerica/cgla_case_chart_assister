@@ -14,6 +14,10 @@ Event = Struct.new(
   :disposition_date,
   :sentence,
   :discharge_date,
+  :conviction,
+  :eligibility,
+  :waiting_period,
+  :notes,
   keyword_init: true) do
 
   def court_event?

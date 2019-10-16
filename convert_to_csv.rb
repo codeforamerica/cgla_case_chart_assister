@@ -19,12 +19,17 @@ end
 input_directory = ARGV[0]
 output_directory = ARGV[1]
 
-Dir.glob("*.xlsx", base: input_directory) do |filename|
-  input_file_path = "#{input_directory}/#{filename}"
-  output_file_path =build_output_file_path(filename, output_directory)
 
-  xls = Roo::Excelx.new(input_file_path)
-  xls.to_csv(output_file_path)
+Dir.glob('**', base: input_directory) do |inner_directory|
+  inner_directory_path = "#{input_directory}/#{inner_directory}"
+  Dir.glob("*.xlsx", base: inner_directory_path) do |filename|
+    input_file_path = "#{inner_directory_path}/#{filename}"
+    output_file_path =build_output_file_path(filename, output_directory)
+
+    xls = Roo::Excelx.new(input_file_path)
+    xls.to_csv(output_file_path)
+  end
 end
+
 
 

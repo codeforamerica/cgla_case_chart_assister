@@ -16,7 +16,7 @@ def build_output_file_path(input_file_path)
 end
 
 def populate_eligibility(input_row, event, history)
-  court_case = history.court_cases.find{ |c| c.case_number == event.case_number}
+  court_case = history.court_cases.find {|c| c.case_number == event.case_number}
   pending_case = history.has_pending_case?
   if event.eligible_for_expungement? && court_case.all_expungable?
     event.set_expungement_eligibility_on_csv_row(input_row, pending_case)
@@ -36,22 +36,26 @@ path_to_directory = ARGV[0]
 Dir.glob("*.csv", base: path_to_directory) do |filename|
   input_file_path = "#{path_to_directory}/#{filename}"
 
-  history_rows = CSV.read(input_file_path, { headers: true, header_converters: :symbol })
+  history_rows = CSV.read(input_file_path, {headers: true, header_converters: :symbol})
+  if history_rows.length > 0
 
-  parser = ChampaignCountyParser.new
+    parser = ChampaignCountyParser.new
 
-  history = parser.parse_history(history_rows)
+    history = parser.parse_history(history_rows)
 
-  CSV.open(build_output_file_path(input_file_path), 'wb') do |output_csv|
-    output_csv << history_rows.headers
+    CSV.open(build_output_file_path(input_file_path), 'wb') do |output_csv|
+      output_csv << history_rows.headers
 
-    history.events.each_with_index do |event, index|
-      unless event.offense_class == 'U'
-        input_row = history_rows[index]
-        output_row = populate_eligibility(input_row, event, history)
-        output_csv << output_row
+      history.events.each_with_index do |event, index|
+        unless event.offense_class == 'U'
+          input_row = history_rows[index]
+          output_row = populate_eligibility(input_row, event, history)
+          output_csv << output_row
+        end
       end
     end
+  else
+    puts "Found empty case chart for #{filename}"
   end
 end
 

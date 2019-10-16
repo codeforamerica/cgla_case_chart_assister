@@ -68,6 +68,11 @@ RSpec.describe Event do
         expect(event3.dismissed?).to eq(true)
       end
 
+      it 'returns false if the disposition is empty' do
+        event = Event.new(disposition: nil, case_number: '12345')
+        expect(event.dismissed?).to eq(false)
+      end
+
       it 'returns false when the disposition is anything else' do
         event = Event.new(disposition: 'some other string', case_number: '12345')
         expect(event.dismissed?).to eq(false)

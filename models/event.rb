@@ -29,7 +29,7 @@ Event = Struct.new(
   end
 
   def dismissed?
-    court_event? && disposition.start_with?('Dismiss')
+    court_event? && disposition!= nil && disposition.start_with?('Dismiss')
   end
 
   def acquitted?

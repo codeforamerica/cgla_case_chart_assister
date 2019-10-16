@@ -25,7 +25,7 @@ RSpec.describe ChampaignCountyParser do
 
       expect(event.central_booking_number).to eq(nil)
       expect(event.case_number).to eq('2007-CM-000747')
-      expect(event.arrest_date).to eq(nil)
+      expect(event.date_filed).to eq('05-Jul-2007')
       expect(event.arresting_agency_code).to eq('Toon County Sheriff')
       expect(event.dcn).to eq('L6700000')
       expect(event.charge_code).to eq('720 5/21-1(1)(a)')

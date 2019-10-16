@@ -55,7 +55,7 @@ def populate_expunge_info(history, data)
                      "Expunge_Case_Number_#{index + 1}": item.dcn,
                      "Expunge_Arresting_Agency_#{index + 1}": item.arresting_agency_code,
                      "Expunge_Charge_#{index + 1}": item.charge_description,
-                     "Expunge_Arrest_Date_#{index + 1}": item.arrest_date,
+                     "Expunge_Arrest_Date_#{index + 1}": item.date_filed,
                      "Expunge_Outcome_#{index + 1}": 'RWC',
                    })
       else #Court case
@@ -63,7 +63,7 @@ def populate_expunge_info(history, data)
                      "Expunge_Case_Number_#{index + 1}": item.case_number,
                      "Expunge_Arresting_Agency_#{index + 1}": item.events[0].arresting_agency_code,
                      "Expunge_Charge_#{index + 1}": item.events.map {|e| e.charge_code}.join(', '),
-                     "Expunge_Arrest_Date_#{index + 1}": item.events[0].arrest_date,
+                     "Expunge_Arrest_Date_#{index + 1}": item.events[0].date_filed,
                      "Expunge_Outcome_#{index + 1}": determine_outcome(item),
                    })
       end

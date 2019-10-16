@@ -3,7 +3,7 @@ require_relative '../constants/disqualified_code_sections'
 Event = Struct.new(
   :central_booking_number,
   :case_number,
-  :arrest_date,
+  :date_filed,
   :arresting_agency_code,
   :dcn,
   :charge_code,

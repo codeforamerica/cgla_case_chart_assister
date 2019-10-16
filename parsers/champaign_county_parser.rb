@@ -24,11 +24,12 @@ class ChampaignCountyParser
   end
 
   def parse_event(row)
-    charge_info = parse_charge(row[:charge])
+    charge_info = parse_charge(row)
     Event.new(
       case_number: row[:case_number],
       dcn: row[:dcn],
       arresting_agency_code: row[:police_agency],
+      date_filed: row[:date_filed],
       charge_code: charge_info[:charge_code],
       charge_description: charge_info[:charge_description],
       offense_type: determine_offense_type(charge_info[:offense_class]),
@@ -50,7 +51,7 @@ class ChampaignCountyParser
 
   def group_by_case_number(events)
     case_number_map = {}
-    events.filter{|e| e.court_event?}.each do |e|
+    events.filter {|e| e.court_event?}.each do |e|
       if case_number_map[e.case_number].nil?
         case_number_map[e.case_number] = [e]
       else
@@ -60,14 +61,19 @@ class ChampaignCountyParser
     case_number_map
   end
 
-  def parse_charge(charge_string)
-      offense_class = nil
-    if charge_string.include?('Class:')
-      charge_elements, offense_class = parse_charge_with_class(charge_string)
-    else
-      charge_elements = charge_string.split('- ')
+  def parse_charge(row)
+    offense_class = nil
+    charge_string = row[:charge]
+    begin
+      if charge_string.include?('Class:')
+        charge_elements, offense_class = parse_charge_with_class(charge_string)
+      else
+        charge_elements = charge_string.split('- ')
+      end
+      charge_code, charge_description = format_charge(charge_elements)
+    rescue
+      puts "Failed to parse charge for #{row}"
     end
-     charge_code, charge_description = format_charge(charge_elements)
     {charge_code: charge_code, charge_description: charge_description, offense_class: offense_class}
   end
 

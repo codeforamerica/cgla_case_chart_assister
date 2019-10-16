@@ -130,6 +130,11 @@ Event = Struct.new(
     row
   end
 
+  def set_undetermined_eligibility_on_csv_row(row)
+    row[:notes] = "Unable to analyze charge for sealing eligibility. Code section may be missing or formatted incorrectly."
+    row
+  end
+
   def set_disqualified_eligibility_on_csv_row(row)
     disqualified_event_message = "This charge is permanently ineligible for sealing."
     disqualified_case_message = "Another charge in this case is permanently ineligible for sealing."

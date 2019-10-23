@@ -8,7 +8,7 @@ class IllinoisEligibilityFlow
     if court_case.all_expungable?
       event.set_expungement_eligibility_on_csv_row(input_row, pending_case)
     elsif court_case.cannot_determine_sealing?
-      event.set_undetermined_eligibility_on_csv_row(input_row, pending_case)
+      event.set_undetermined_eligibility_on_csv_row(input_row)
     elsif court_case.all_sealable?
       event.set_sealable_eligibility_on_csv_row(input_row, pending_case)
     else

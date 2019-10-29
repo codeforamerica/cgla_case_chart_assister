@@ -3,7 +3,7 @@ require_relative '../../parsers/champaign_county_parser'
 RSpec.describe ChampaignCountyParser do
   let(:subject) {ChampaignCountyParser.new}
   describe 'parse_event' do
-    it 'builds an Event using the data from a csv row' do
+    it 'builds an Event using the data from a csv row and an index' do
       fake_row = {
         individual: 'CHIPMUNK, ALVIN',
         date_of_birth: '02-May-85',
@@ -21,8 +21,9 @@ RSpec.describe ChampaignCountyParser do
         wp: nil,
         notes: nil
       }
-      event = subject.parse_event(fake_row)
+      event = subject.parse_event(fake_row, 3)
 
+      expect(event.index).to eq(3)
       expect(event.central_booking_number).to eq(nil)
       expect(event.case_number).to eq('2007-CM-000747')
       expect(event.date_filed).to eq('05-Jul-2007')
@@ -36,6 +37,33 @@ RSpec.describe ChampaignCountyParser do
       expect(event.disposition_date).to eq('18-Sep-2007')
       expect(event.sentence).to eq('Fines and/or Cost/Penalties and Fees; Probation (24 months); Anti-Crime Assessment Fee;;')
       expect(event.discharge_date).to eq(nil)
+    end
+
+    context 'when the case number and dcn are both nil' do
+      it 'ignores the row and returns nil' do
+        ignorable_row = {
+          individual: 'CHIPMUNK, ALVIN',
+          date_of_birth: '02-May-85',
+          arresting_agency: nil,
+          case_number: nil,
+          dcn: nil,
+          status_description: 'Closed',
+          date_filed: '05-Jul-2007',
+          charge: 'Deceptive Practices',
+          disposition_date: nil,
+          disposition: nil,
+          sentence: nil,
+          balance: nil,
+          conviction: nil,
+          eligibility: nil,
+          wp: nil,
+          notes: nil
+        }
+
+        result = subject.parse_event(ignorable_row, 1)
+
+        expect(result).to be_nil
+      end
     end
 
     context 'when the charge code is missing' do
@@ -56,7 +84,7 @@ RSpec.describe ChampaignCountyParser do
           wp: nil,
           notes: nil
         }
-        event = subject.parse_event(fake_row)
+        event = subject.parse_event(fake_row, 1)
 
         expect(event.charge_code).to eq('')
         expect(event.charge_description).to eq('Criminal Trespass To Real Prop')
@@ -83,7 +111,7 @@ RSpec.describe ChampaignCountyParser do
           wp: nil,
           notes: nil
         }
-        event = subject.parse_event(fake_row)
+        event = subject.parse_event(fake_row, 1)
 
         expect(event.charge_code).to eq('720 5/21-1(1)(a)')
         expect(event.charge_description).to eq('Knowingly Damage Prop<$300')
@@ -110,7 +138,7 @@ RSpec.describe ChampaignCountyParser do
           wp: nil,
           notes: nil
         }
-        event = subject.parse_event(fake_row)
+        event = subject.parse_event(fake_row, 1)
 
         expect(event.charge_code).to eq(nil)
         expect(event.charge_description).to eq('Knowingly Damage Prop<$300')
@@ -121,7 +149,7 @@ RSpec.describe ChampaignCountyParser do
   end
 
   describe 'parse_court_cases' do
-    let(:row1) {Event.new(
+    let(:event1) {Event.new(
       arresting_agency_code: 'Toon Town Sheriff',
       case_number: '2007-CM-000747',
       charge_code: '720 5/21-1(1)(a)',
@@ -133,7 +161,7 @@ RSpec.describe ChampaignCountyParser do
       sentence: 'Fines and/or Cost/Penalties and Fees; Probation (24 months); Anti-Crime Assessment Fee;;',
       )}
 
-    let(:row2) {Event.new(
+    let(:event2) {Event.new(
       arresting_agency_code: 'Toon Town Sheriff',
       case_number: '2007-CM-000747',
       charge_code: nil,
@@ -145,7 +173,7 @@ RSpec.describe ChampaignCountyParser do
       sentence: 'No Sentence',
       )}
 
-    let(:row3) {Event.new(
+    let(:event3) {Event.new(
       arresting_agency_code: 'Toon Town Sheriff',
       case_number: '2013-CM-000748',
       charge_code: '720 5/21-1(1)(a)',
@@ -157,7 +185,7 @@ RSpec.describe ChampaignCountyParser do
       sentence: 'No Sentence',
       )}
 
-    let(:row4) {Event.new(
+    let(:event4) {Event.new(
       arresting_agency_code: 'Toon Town Sheriff',
       case_number: nil,
       charge_code: nil,
@@ -169,7 +197,7 @@ RSpec.describe ChampaignCountyParser do
       sentence: nil,
       )}
     it 'creates a court case for each case number' do
-      court_cases = subject.parse_court_cases([row1, row2, row3, row4])
+      court_cases = subject.parse_court_cases([event1, event2, event3, event4])
 
       expect(court_cases.length).to eq(2)
       expect(court_cases[0].case_number).to eq('2007-CM-000747')
@@ -177,7 +205,7 @@ RSpec.describe ChampaignCountyParser do
     end
 
     it 'assigns all court events with a given case number to that court case' do
-      court_cases = subject.parse_court_cases([row1, row2, row3, row4])
+      court_cases = subject.parse_court_cases([event1, event2, event3, event4])
 
       expect(court_cases.length).to eq(2)
       expect(court_cases[0].events.length).to eq(2)
@@ -186,7 +214,7 @@ RSpec.describe ChampaignCountyParser do
   end
 
   describe 'parse_history' do
-    it 'returns a History that contains an Event of each row provided and corresponding CourtCases' do
+    it 'returns a History that contains an Event of each analyzable row provided and corresponding CourtCases' do
       row1 = {
         individual: 'CHIPMUNK, ALVIN',
         date_of_birth: '02-May-85',
@@ -231,6 +259,52 @@ RSpec.describe ChampaignCountyParser do
       expect(history.court_cases.length).to eq(1)
       expect(history.court_cases.first.class).to eq(CourtCase)
       expect(history.court_cases.first.case_number).to eq('2007-CM-000747')
+    end
+
+    it 'ignores rows that are missing critical information' do
+      row1 = {
+        individual: 'CHIPMUNK, ALVIN',
+        date_of_birth: '02-May-85',
+        arresting_agency: nil,
+        case_number: nil,
+        dcn: nil,
+        date_filed: '05-Jul-2009',
+        charge: 'Trespassing',
+        disposition_date: nil,
+        disposition: nil,
+        sentence: nil,
+        balance: nil,
+        conviction: nil,
+        eligibility: nil,
+        wp: nil,
+        notes: nil
+      }
+
+      row2 = {
+        individual: 'CHIPMUNK, ALVIN',
+        date_of_birth: '02-May-85',
+        arresting_agency: nil,
+        case_number: '2007-CM-000747',
+        status_description: 'Closed',
+        date_filed: '05-Jul-2007',
+        charge: '720 5/21-1(1)(a) - Knowingly Damage Prop<$300 - Class: A',
+        disposition_date: '18-Sep-2007',
+        disposition: 'Guilty',
+        sentence: 'Fines and/or Cost/Penalties and Fees; Probation (24 months); Anti-Crime Assessment Fee;;',
+        balance: '$0.00',
+        conviction: nil,
+        eligibility: nil,
+        wp: nil,
+        notes: nil
+      }
+
+      history = subject.parse_history([row1, row2])
+
+      expect(history.person_name).to eq('CHIPMUNK, ALVIN')
+      expect(history.ir_number).to eq(nil)
+      expect(history.dob).to eq('02-May-85')
+      expect(history.events.length).to eq(1)
+      expect(history.events.first.index).to eq(1)
     end
   end
 end

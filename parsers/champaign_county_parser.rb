@@ -14,7 +14,7 @@ TRAFFIC_CLASSES = ['U']
 
 class ChampaignCountyParser
   def parse_history(rows)
-    events = rows.map {|row| parse_event(row)}
+    events = rows.each_with_index.map {|row, i| parse_event(row, i)}.compact
     History.new(
       person_name: rows[0][:individual],
       dob: rows[0][:date_of_birth],
@@ -23,9 +23,13 @@ class ChampaignCountyParser
     )
   end
 
-  def parse_event(row)
+  def parse_event(row, index)
+    if row[:case_number] == nil && row[:dcn] == nil
+      return nil
+    end
     charge_info = parse_charge(row)
     Event.new(
+      index: index,
       case_number: row[:case_number],
       dcn: row[:dcn],
       arresting_agency_code: row[:police_agency],

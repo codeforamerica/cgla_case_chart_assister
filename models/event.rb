@@ -1,6 +1,7 @@
 require_relative '../constants/disqualified_code_sections'
 
 Event = Struct.new(
+  :index,
   :central_booking_number,
   :case_number,
   :date_filed,
@@ -29,7 +30,7 @@ Event = Struct.new(
   end
 
   def dismissed?
-    court_event? && disposition!= nil && disposition.start_with?('Dismiss')
+    court_event? && disposition != nil && disposition.start_with?('Dismiss')
   end
 
   def acquitted?

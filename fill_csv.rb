@@ -34,9 +34,9 @@ Dir.glob("*.csv", base: path_to_directory) do |filename|
     CSV.open(build_output_file_path(input_file_path), 'wb') do |output_csv|
       output_csv << history_rows.headers
 
-      history.events.each_with_index do |event, index|
+      history.events.each do |event|
         unless event.offense_class == 'U'
-          input_row = history_rows[index]
+          input_row = history_rows[event.index]
           output_row = eligibility_flow.populate_eligibility(input_row, event, history)
           output_csv << output_row
         end

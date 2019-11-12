@@ -1,16 +1,12 @@
 require_relative '../models/event'
 require_relative '../models/court_case'
 require_relative '../models/history'
+require_relative '../constants/offense_classes'
 
 # CSV Schema
 # { individual, date_of_birth, police_agency, case_number, dcn,
 #   date_filed, charge, disposition_date, disposition, sentence, balance,
 #   conviction, eligibility, wp, notes }
-
-MISDEMEANOR_CLASSES = ['A', 'B', 'C']
-FELONY_CLASSES = ['M', 'X', '1', '2', '3', '4']
-TRAFFIC_CLASSES = ['U']
-# What are N and R?
 
 class ChampaignCountyParser
   def parse_history(rows)

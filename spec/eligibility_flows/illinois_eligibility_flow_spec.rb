@@ -1,4 +1,5 @@
 require_relative '../../eligibility_flows/illinois_eligibility_flow'
+require_relative '../../updaters/eligibility_updater'
 
 RSpec.describe IllinoisEligibilityFlow do
   let(:subject) {IllinoisEligibilityFlow.new}
@@ -14,6 +15,10 @@ RSpec.describe IllinoisEligibilityFlow do
       allow(court_case).to receive(:case_number) {1234}
       allow(history).to receive(:court_cases) {[court_case]}
       allow(history).to receive(:has_pending_case?) {false}
+      allow(EligibilityUpdater).to receive(:apply_expungement_eligibility)
+      allow(EligibilityUpdater).to receive(:apply_undetermined_eligibility)
+      allow(EligibilityUpdater).to receive(:apply_sealable_eligibility)
+      allow(EligibilityUpdater).to receive(:apply_disqualified_eligibility)
     end
 
     context 'when the event does not qualify for analysis' do
@@ -34,7 +39,7 @@ RSpec.describe IllinoisEligibilityFlow do
       end
 
       it 'sets expungement info on the row' do
-        expect(event).to receive(:set_expungement_eligibility_on_csv_row)
+        expect(EligibilityUpdater).to receive(:apply_expungement_eligibility)
         subject.populate_eligibility(row, event, history)
       end
     end
@@ -47,7 +52,7 @@ RSpec.describe IllinoisEligibilityFlow do
       end
 
       it 'sets undetermined info on row' do
-        expect(event).to receive(:set_undetermined_eligibility_on_csv_row)
+        expect(EligibilityUpdater).to receive(:apply_undetermined_eligibility)
         subject.populate_eligibility(row, event, history)
       end
     end
@@ -61,7 +66,7 @@ RSpec.describe IllinoisEligibilityFlow do
       end
 
       it 'sets sealing info on the row' do
-        expect(event).to receive(:set_sealable_eligibility_on_csv_row)
+        expect(EligibilityUpdater).to receive(:apply_sealable_eligibility)
         subject.populate_eligibility(row, event, history)
       end
     end
@@ -75,7 +80,7 @@ RSpec.describe IllinoisEligibilityFlow do
       end
 
       it 'sets disqualified info on the row' do
-        expect(event).to receive(:set_disqualified_eligibility_on_csv_row)
+        expect(EligibilityUpdater).to receive(:apply_disqualified_eligibility)
         subject.populate_eligibility(row, event, history)
       end
     end

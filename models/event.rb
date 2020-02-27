@@ -109,46 +109,6 @@ Event = Struct.new(
     }
   end
 
-  def set_expungement_eligibility_on_csv_row(row, pending_case)
-    eligible_message = "Expunge if no pending cases in other counties. #{expungement_type}"
-    pending_case_message = "Pending case in Champaign Co. Expunge once no cases are pending. #{expungement_type}"
-
-    row[:conviction] = 'N'
-    row[:eligibility] = pending_case ? 'N' : 'E'
-    row[:wp] = pending_case ? 'Y' : 'N'
-    row[:notes] = pending_case ? pending_case_message : eligible_message
-    row
-  end
-
-  def set_sealable_eligibility_on_csv_row(row, pending_case)
-    eligible_message = "Charge eligible for sealing, no pending case in Champaign County. Seal if not in waiting period and no pending cases in other counties."
-    pending_case_message = "Charge eligible for sealing, but pending case detected in Champaign County."
-
-    row[:conviction] = conviction? ? 'Y' : 'N'
-    row[:eligibility] = pending_case ? 'N' : 'S'
-    row[:wp] = pending_case ? 'Y' : 'TBD'
-    row[:notes] = pending_case ? pending_case_message : eligible_message
-    row
-  end
-
-  def set_undetermined_eligibility_on_csv_row(row)
-    row[:notes] = "Unable to analyze a charge in this case for sealing eligibility. Code section may be missing or formatted incorrectly."
-    row
-  end
-
-  def set_disqualified_eligibility_on_csv_row(row)
-    disqualified_event_message = "This charge is permanently ineligible for sealing."
-    disqualified_case_message = "Another charge in this case is permanently ineligible for sealing."
-
-    row[:conviction] = conviction? ? 'Y' : 'N'
-    row[:eligibility] = 'N'
-    row[:wp] = 'N/A'
-    row[:notes] = eligible_for_sealing? ? disqualified_case_message : disqualified_event_message
-    row
-  end
-
-  private
-
   def expungement_type
     if dismissed?
       '(Dismissal)'

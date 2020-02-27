@@ -1,3 +1,5 @@
+require_relative '../updaters/eligibility_updater'
+
 class IllinoisEligibilityFlow
   def populate_eligibility(input_row, event, history)
     unless event.fill_eligibility_info?
@@ -5,14 +7,15 @@ class IllinoisEligibilityFlow
     end
     court_case = history.court_cases.find {|c| c.case_number == event.case_number}
     pending_case = history.has_pending_case?
+
     if court_case.all_expungable?
-      event.set_expungement_eligibility_on_csv_row(input_row, pending_case)
+      EligibilityUpdater.apply_expungement_eligibility(input_row, pending_case, event)
     elsif court_case.cannot_determine_sealing?
-      event.set_undetermined_eligibility_on_csv_row(input_row)
+      EligibilityUpdater.apply_undetermined_eligibility(input_row)
     elsif court_case.all_sealable?
-      event.set_sealable_eligibility_on_csv_row(input_row, pending_case)
+      EligibilityUpdater.apply_sealable_eligibility(input_row, pending_case, event)
     else
-      event.set_disqualified_eligibility_on_csv_row(input_row)
+      EligibilityUpdater.apply_disqualified_eligibility(input_row, event)
     end
   end
 end

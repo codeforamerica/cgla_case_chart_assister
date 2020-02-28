@@ -12,19 +12,20 @@ require 'pdf-forms'
 require_relative 'models/history'
 require_relative 'models/event'
 require_relative 'parsers/champaign_county_parser'
+require_relative 'serializers/non_cook_pdf_serializer'
 
 $pdftk = PdfForms.new
 
 def populate_basic_event_data(data, event, index)
-  data.merge(event.basic_case_chart_hash(index))
+  data.merge(NonCookPDFSerializer.serialize_event(index, event))
 end
 
 def populate_pre_jano_event_data(data, event, index)
-  data.merge(event.pre_jano_case_chart_hash(index))
+  data.merge(NonCookPDFSerializer.serialize_pre_jano_event(index, event))
 end
 
 def populate_expungement_event_data(data, event, pending_case, index)
-  data.merge(event.expungement_case_chart_hash(index, pending_case))
+  data.merge(NonCookPDFSerializer.serialize_expungement_event(index, event, pending_case))
 end
 
 def populate_court_event_data(court_events, pending_case)

@@ -1,7 +1,7 @@
 require_relative '../../parsers/champaign_county_parser'
 
 RSpec.describe ChampaignCountyParser do
-  let(:subject) {ChampaignCountyParser.new}
+  let(:subject) { ChampaignCountyParser.new }
   describe 'parse_event' do
     it 'builds an Event using the data from a csv row and an index' do
       fake_row = {

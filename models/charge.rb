@@ -13,10 +13,6 @@ Charge = Struct.new(
   :offense_type,
   :offense_class,
   :dispositions,
-  # :disposition,
-  # :disposition_date,
-  # :sentence,
-  # :discharge_date,
   keyword_init: true) do
 
   def pending_case?

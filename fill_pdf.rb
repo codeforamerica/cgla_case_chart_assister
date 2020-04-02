@@ -9,9 +9,9 @@
 require 'csv'
 require 'logger'
 require 'pdf-forms'
-require_relative 'models/history'
-require_relative 'models/event'
-require_relative 'parsers/champaign_county_parser'
+require_relative 'lib/cgla_case_chart_assister/models/history'
+require_relative 'lib/cgla_case_chart_assister/models/event'
+require_relative 'lib/cgla_case_chart_assister/parsers/champaign_county_parser'
 
 $pdftk = PdfForms.new
 

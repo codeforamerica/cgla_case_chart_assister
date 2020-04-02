@@ -1,5 +1,11 @@
 # Ignore bundler config.
 /.bundle
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -10,3 +16,5 @@
 .idea
 .DS_Store
 
+# rspec failure tracking
+.rspec_status

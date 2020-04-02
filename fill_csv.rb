@@ -6,10 +6,10 @@
 
 require 'csv'
 require 'logger'
-require_relative 'models/history'
-require_relative 'models/event'
-require_relative 'parsers/champaign_county_parser'
-require_relative 'eligibility_flows/illinois_eligibility_flow'
+require_relative 'lib/cgla_case_chart_assister/models/history'
+require_relative 'lib/cgla_case_chart_assister/models/event'
+require_relative 'lib/cgla_case_chart_assister/parsers/champaign_county_parser'
+require_relative 'lib/cgla_case_chart_assister/eligibility_flows/illinois_eligibility_flow'
 
 def build_output_file_path(input_file_path)
   input_file_name = input_file_path.split('/').last.split('.').first

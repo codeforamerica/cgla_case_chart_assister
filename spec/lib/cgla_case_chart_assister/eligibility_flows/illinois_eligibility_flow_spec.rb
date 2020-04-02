@@ -1,7 +1,7 @@
-require_relative '../../eligibility_flows/illinois_eligibility_flow'
+require 'cgla_case_chart_assister/eligibility_flows/illinois_eligibility_flow'
 
-RSpec.describe IllinoisEligibilityFlow do
-  let(:subject) {IllinoisEligibilityFlow.new}
+RSpec.describe CglaCaseChartAssister::IllinoisEligibilityFlow do
+  let(:subject) {CglaCaseChartAssister::IllinoisEligibilityFlow.new}
 
   describe '#populate_eligibility' do
     let(:row) {double('row')}

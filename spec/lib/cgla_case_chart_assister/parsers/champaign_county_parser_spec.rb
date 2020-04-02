@@ -1,7 +1,7 @@
-require_relative '../../parsers/champaign_county_parser'
+require 'cgla_case_chart_assister/parsers/champaign_county_parser'
 
-RSpec.describe ChampaignCountyParser do
-  let(:subject) { ChampaignCountyParser.new }
+RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
+  let(:subject) { CglaCaseChartAssister::ChampaignCountyParser.new }
   describe 'parse_event' do
     it 'builds an Event using the data from a csv row and an index' do
       fake_row = {
@@ -149,7 +149,7 @@ RSpec.describe ChampaignCountyParser do
   end
 
   describe 'parse_court_cases' do
-    let(:event1) {Event.new(
+    let(:event1) {CglaCaseChartAssister::Event.new(
       arresting_agency_code: 'Toon Town Sheriff',
       case_number: '2007-CM-000747',
       charge_code: '720 5/21-1(1)(a)',
@@ -161,7 +161,7 @@ RSpec.describe ChampaignCountyParser do
       sentence: 'Fines and/or Cost/Penalties and Fees; Probation (24 months); Anti-Crime Assessment Fee;;',
       )}
 
-    let(:event2) {Event.new(
+    let(:event2) {CglaCaseChartAssister::Event.new(
       arresting_agency_code: 'Toon Town Sheriff',
       case_number: '2007-CM-000747',
       charge_code: nil,
@@ -173,7 +173,7 @@ RSpec.describe ChampaignCountyParser do
       sentence: 'No Sentence',
       )}
 
-    let(:event3) {Event.new(
+    let(:event3) {CglaCaseChartAssister::Event.new(
       arresting_agency_code: 'Toon Town Sheriff',
       case_number: '2013-CM-000748',
       charge_code: '720 5/21-1(1)(a)',
@@ -185,7 +185,7 @@ RSpec.describe ChampaignCountyParser do
       sentence: 'No Sentence',
       )}
 
-    let(:event4) {Event.new(
+    let(:event4) {CglaCaseChartAssister::Event.new(
       arresting_agency_code: 'Toon Town Sheriff',
       case_number: nil,
       charge_code: nil,
@@ -255,9 +255,9 @@ RSpec.describe ChampaignCountyParser do
       expect(history.ir_number).to eq(nil)
       expect(history.dob).to eq('02-May-85')
       expect(history.events.length).to eq(2)
-      expect(history.events.first.class).to eq(Event)
+      expect(history.events.first.class).to eq(CglaCaseChartAssister::Event)
       expect(history.court_cases.length).to eq(1)
-      expect(history.court_cases.first.class).to eq(CourtCase)
+      expect(history.court_cases.first.class).to eq(CglaCaseChartAssister::CourtCase)
       expect(history.court_cases.first.case_number).to eq('2007-CM-000747')
     end
 

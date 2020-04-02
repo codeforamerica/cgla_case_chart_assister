@@ -1,10 +1,9 @@
 require 'json'
+require 'cgla_case_chart_assister/parsers/cook_county_parser'
+require_relative '../../../support/fixture_helper'
 
-require_relative '../../parsers/cook_county_parser'
-require_relative '../support/fixture_helper'
-
-RSpec.describe CookCountyParser do
-  let(:subject) { CookCountyParser.new }
+RSpec.describe CglaCaseChartAssister::CookCountyParser do
+  let(:subject) { CglaCaseChartAssister::CookCountyParser.new }
   let(:history_json) { JSON.parse(FixtureHelper::read_fixture('cook_county.json')) }
 
   describe '#parse_history' do

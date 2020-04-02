@@ -6,6 +6,12 @@ require_relative '../../models/disposition'
 RSpec.describe Charge do
   let(:event) {Charge.new(dcn: 'L6748494', case_number: '2007-CM-000747')}
 
+  describe "type" do
+    it 'returns :charge' do
+      expect(event.type).to eq(:charge)
+    end
+  end
+
   describe '#pending_case?' do
 
     it 'returns true when neither disposition nor disposition date are populated' do

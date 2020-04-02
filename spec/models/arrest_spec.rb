@@ -2,6 +2,13 @@ require_relative '../../models/arrest'
 
 RSpec.describe Arrest do
   let(:arrest) {Arrest.new}
+
+  describe "type" do
+    it 'returns :arrest' do
+      expect(arrest.type).to eq(:arrest)
+    end
+  end
+
   describe '#pending_case?' do
     it 'returns false' do
       expect(arrest.pending_case?).to eq(false)

@@ -1,4 +1,6 @@
+require_relative '../models/arrest'
 require_relative '../models/charge'
+require_relative '../models/disposition'
 require_relative '../models/court_case'
 require_relative '../models/history'
 require_relative '../constants/offense_classes'
@@ -23,21 +25,36 @@ class ChampaignCountyParser
     if row[:case_number] == nil && row[:dcn] == nil
       return nil
     end
+
     charge_info = parse_charge(row)
-    Charge.new(
-      index: index,
-      case_number: row[:case_number],
-      dcn: row[:dcn],
-      arresting_agency_code: row[:police_agency],
-      date_filed: row[:date_filed],
-      charge_code: charge_info[:charge_code],
-      charge_description: charge_info[:charge_description],
-      offense_type: determine_offense_type(charge_info[:offense_class]),
-      offense_class: charge_info[:offense_class],
-      disposition: row[:disposition],
-      disposition_date: row[:disposition_date],
-      sentence: row[:sentence]
-    )
+    if row[:case_number]
+      disposition = Disposition.new(
+        description: row[:disposition],
+        date: row[:disposition_date],
+        sentence_description: row[:sentence]
+      )
+      Charge.new(
+        index: index,
+        case_number: row[:case_number],
+        dcn: row[:dcn],
+        arresting_agency_code: row[:police_agency],
+        date_filed: row[:date_filed],
+        code: charge_info[:code],
+        description: charge_info[:description],
+        offense_type: determine_offense_type(charge_info[:offense_class]),
+        offense_class: charge_info[:offense_class],
+        dispositions: [disposition]
+      )
+    elsif row[:dcn]
+      Arrest.new(
+        index: index,
+        dcn: row[:dcn],
+        arresting_agency_code: row[:police_agency],
+        date_filed: row[:date_filed],
+        code: charge_info[:code],
+        description: charge_info[:description],
+      )
+    end
   end
 
   def parse_court_cases(events)
@@ -51,7 +68,7 @@ class ChampaignCountyParser
 
   def group_by_case_number(events)
     case_number_map = {}
-    events.filter {|e| e.court_event?}.each do |e|
+    events.filter {|e| e.type == :charge}.each do |e|
       if case_number_map[e.case_number].nil?
         case_number_map[e.case_number] = [e]
       else
@@ -70,11 +87,11 @@ class ChampaignCountyParser
       else
         charge_elements = charge_string.split('- ')
       end
-      charge_code, charge_description = format_charge(charge_elements)
+      code, description = format_charge(charge_elements)
     rescue
       puts "Failed to parse charge for #{row}"
     end
-    {charge_code: charge_code, charge_description: charge_description, offense_class: offense_class}
+    {code: code, description: description, offense_class: offense_class}
   end
 
   def parse_charge_with_class(charge_string)
@@ -84,12 +101,12 @@ class ChampaignCountyParser
   end
 
   def format_charge(charge_elements)
-    charge_description = charge_elements.pop.strip
-    charge_code = nil
+    description = charge_elements.pop.strip
+    code = nil
     if !charge_elements.empty?
-      charge_code = charge_elements[0].strip
+      code = charge_elements[0].strip
     end
-    return charge_code, charge_description
+    return code, description
   end
 
   def determine_offense_type(offense_class)

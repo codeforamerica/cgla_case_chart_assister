@@ -15,6 +15,10 @@ Charge = Struct.new(
   :dispositions,
   keyword_init: true) do
 
+  def type
+    :charge
+  end
+
   def pending_case?
     dispositions&.all?{|disposition| disposition.description.nil? && disposition.date.nil? }
   end

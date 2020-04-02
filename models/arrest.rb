@@ -14,6 +14,10 @@ Arrest = Struct.new(
   :dispositions,
   keyword_init: true) do
 
+  def type
+    :arrest
+  end
+
   def pending_case?
     false
   end

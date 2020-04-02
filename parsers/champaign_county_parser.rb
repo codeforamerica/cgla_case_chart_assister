@@ -1,4 +1,4 @@
-require_relative '../models/event'
+require_relative '../models/charge'
 require_relative '../models/court_case'
 require_relative '../models/history'
 require_relative '../constants/offense_classes'
@@ -24,7 +24,7 @@ class ChampaignCountyParser
       return nil
     end
     charge_info = parse_charge(row)
-    Event.new(
+    Charge.new(
       index: index,
       case_number: row[:case_number],
       dcn: row[:dcn],

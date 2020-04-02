@@ -1,4 +1,4 @@
-require_relative '../models/event'
+require_relative '../models/charge'
 require_relative '../models/court_case'
 require_relative '../models/history'
 require_relative '../constants/offense_classes'

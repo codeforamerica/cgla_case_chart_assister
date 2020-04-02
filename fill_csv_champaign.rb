@@ -7,7 +7,7 @@
 require 'csv'
 require 'logger'
 require_relative 'models/history'
-require_relative 'models/event'
+require_relative 'models/charge'
 require_relative 'parsers/champaign_county_parser'
 require_relative 'eligibility_flows/illinois_eligibility_flow'
 

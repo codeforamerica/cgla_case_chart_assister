@@ -1,6 +1,6 @@
 require_relative '../constants/disqualified_code_sections'
 
-Event = Struct.new(
+Arrest = Struct.new(
   :index,
   :central_booking_number,
   :case_number,
@@ -11,10 +11,11 @@ Event = Struct.new(
   :charge_description,
   :offense_type,
   :offense_class,
-  :disposition,
-  :disposition_date,
-  :sentence,
-  :discharge_date,
+  :dispositions,
+  # :disposition,
+  # :disposition_date,
+  # :sentence,
+  # :discharge_date,
   keyword_init: true) do
 
   def court_event?

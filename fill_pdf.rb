@@ -10,7 +10,7 @@ require 'csv'
 require 'logger'
 require 'pdf-forms'
 require_relative 'models/history'
-require_relative 'models/event'
+require_relative 'models/charge'
 require_relative 'parsers/champaign_county_parser'
 
 $pdftk = PdfForms.new

@@ -16,7 +16,7 @@ GEM
     pdf-forms (1.2.0)
       cliver (~> 0.3.2)
       safe_shell (>= 1.0.3, < 2.0)
-    rake (10.5.0)
+    rake (13.0.1)
     roo (2.8.3)
       nokogiri (~> 1)
       rubyzip (>= 1.3.0, < 3.0.0)
@@ -42,7 +42,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.17)
   cgla_case_chart_assister!
-  rake (~> 10.0)
+  rake (>= 12.3.3)
   rspec (~> 3.0)
 
 BUNDLED WITH

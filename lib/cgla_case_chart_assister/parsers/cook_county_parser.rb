@@ -14,13 +14,17 @@ module CglaCaseChartAssister
         court_cases = parse_court_cases(case_details)
         all_charges = court_cases.map(&:charges).flatten
 
-        History.new(
-          person_name: parse_name(case_details[0]['Name']),
-          ir_number: history_json['IR_number'],
-          dob: Date.parse(case_details[0]['Date_of_Birth']),
-          events: all_charges,
-          court_cases: court_cases
-        )
+        if case_details.length.zero?
+          History.new(ir_number: history_json['IR_number'])
+        else
+          History.new(
+            person_name: parse_name(case_details[0]['Name']),
+            ir_number: history_json['IR_number'],
+            dob: Date.parse(case_details[0]['Date_of_Birth']),
+            events: all_charges,
+            court_cases: court_cases
+          )
+        end
       end
 
       def parse_court_cases(case_details_array)

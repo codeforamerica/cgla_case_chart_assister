@@ -7,17 +7,32 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
   let(:cook_json) { JSON.parse(FixtureHelper.read_fixture('./spec/fixtures/cook_county.json')) }
 
   describe 'parse_history' do
-    it 'returns a History that contains an Event of each analyzable row provided and corresponding CourtCases' do
-      history = CglaCaseChartAssister::CookCountyParser.parse_history(cook_json)
+    context 'when case details are present' do
+      it 'returns a History that contains an Event of each analyzable row provided and corresponding CourtCases' do
+        history = CglaCaseChartAssister::CookCountyParser.parse_history(cook_json)
 
-      expect(history.person_name).to eq('DOE, JOHN')
-      expect(history.ir_number).to eq('5555555')
-      expect(history.dob).to eq(Date.parse('1970-01-03'))
-      expect(history.events.length).to eq(5)
-      expect(history.events.first.type).to eq(:charge)
-      expect(history.court_cases.length).to eq(3)
-      expect(history.court_cases.first.type).to eq(:court_case)
-      expect(history.court_cases.first.case_number).to eq('00CR1234567')
+        expect(history.person_name).to eq('DOE, JOHN')
+        expect(history.ir_number).to eq('5555555')
+        expect(history.dob).to eq(Date.parse('1970-01-03'))
+        expect(history.events.length).to eq(5)
+        expect(history.events.first).to be_a(CglaCaseChartAssister::Charge)
+        expect(history.court_cases.length).to eq(3)
+        expect(history.court_cases.first.case_number).to eq('00CR1234567')
+      end
+    end
+
+    context 'when case details are not present' do
+      let(:cook_json) { JSON.parse(FixtureHelper.read_fixture('./spec/fixtures/cook_county_empty.json')) }
+
+      it 'returns a History with empty information' do
+        history = CglaCaseChartAssister::CookCountyParser.parse_history(cook_json)
+
+        expect(history.person_name).to eq(nil)
+        expect(history.ir_number).to eq('asldfkjasdf')
+        expect(history.dob).to eq(nil)
+        expect(history.events.length).to eq(0)
+        expect(history.court_cases.length).to eq(0)
+      end
     end
   end
 

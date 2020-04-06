@@ -1,0 +1,176 @@
+{
+  "IR_number": "5555555",
+  "CaseDetails": [
+    {
+      "Case_Number": "00CR1234567",
+      "Name": "DOE  JOHN",
+      "Date_of_Birth": "19700103",
+      "Gender": "M ",
+      "RD_Number": "F111111",
+      "CB_Number": "0123456789",
+      "SID_Number": "098765432",
+      "FBI_Number": "087654321",
+      "DFND_Ticket_NBR": null,
+      "ChargeDetails": [
+        {
+          "DCN": "0123456789",
+          "Statute": "VOP",
+          "Charge": "Violation of Probation - Office Use Only",
+          "Sentence": "Probation",
+          "Sequence": "1",
+          "Degree": "Violation",
+          "Disposition_description": null,
+          "Disposition_date": "10/18/2000 12:00:00 AM",
+          "Sentence_duration": "0"
+        },
+        {
+          "DCN": "0123456789",
+          "Statute": "720-570/402(C)",
+          "Charge": "POSS AMT CON SUB EXCEPT(A)/(D)",
+          "Sentence": "Probation",
+          "Sequence": "6",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Finding of Guilty",
+          "Disposition_date": "10/18/2000 12:00:00 AM",
+          "Sentence_duration": "0"
+        },
+        {
+          "DCN": "0123456789",
+          "Statute": "720-570/402(C)",
+          "Charge": "POSS AMT CON SUB EXCEPT(A)/(D)",
+          "Sentence": "Probation",
+          "Sequence": "6",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Plea of Guilty",
+          "Disposition_date": "10/18/2000 12:00:00 AM",
+          "Sentence_duration": "0"
+        },
+        {
+          "DCN": "0123456789",
+          "Statute": "720-570/402(C)",
+          "Charge": "POSS AMT CON SUB EXCEPT(A)/(D)",
+          "Sentence": "Probation",
+          "Sequence": "6",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Probation Terminated- Satisfactory",
+          "Disposition_date": "10/18/2000 12:00:00 AM",
+          "Sentence_duration": "0"
+        }
+      ]
+    },
+    {
+      "Case_Number": "14CR0123456",
+      "Name": "DOE  JOHN",
+      "Date_of_Birth": "19700102",
+      "Gender": "M ",
+      "RD_Number": null,
+      "CB_Number": "018000000",
+      "SID_Number": "098765432",
+      "FBI_Number": "087654321",
+      "DFND_Ticket_NBR": null,
+      "ChargeDetails": [
+        {
+          "DCN": "018000000",
+          "Statute": "625-5/6-303(A)",
+          "Charge": "DRIVING RVK/SUSP DUI/SSS 2ND",
+          "Sentence": "IDOC",
+          "Sequence": "3",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Nolle Prosequi",
+          "Disposition_date": "5/8/2015 12:00:00 AM",
+          "Sentence_duration": "1"
+        },
+        {
+          "DCN": "018000000",
+          "Statute": "625-5/6-303(A)",
+          "Charge": "DRIVING RVK/SUSP DUI/SSS 3RD",
+          "Sentence": "IDOC",
+          "Sequence": "3",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Nolle Prosequi",
+          "Disposition_date": "5/8/2015 12:00:00 AM",
+          "Sentence_duration": "1"
+        },
+        {
+          "DCN": "018000000",
+          "Statute": "625-5/6-303(A)",
+          "Charge": "DRIVING RVK/SUSP DUI/SSS 4-9",
+          "Sentence": "IDOC",
+          "Sequence": "3",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Nolle Prosequi",
+          "Disposition_date": "5/8/2015 12:00:00 AM",
+          "Sentence_duration": "1"
+        },
+        {
+          "DCN": "018000000",
+          "Statute": "625-5/6-303(A)",
+          "Charge": "DRIVING RVK/SUSP DUI/SSS 4-9",
+          "Sentence": "IDOC",
+          "Sequence": "5",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Finding of Guilty",
+          "Disposition_date": "5/8/2015 12:00:00 AM",
+          "Sentence_duration": "1"
+        },
+        {
+          "DCN": "018000000",
+          "Statute": "625-5/6-303(A)",
+          "Charge": "DRIVING RVK/SUSP DUI/SSS 4-9",
+          "Sentence": "IDOC",
+          "Sequence": "5",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Plea of Guilty",
+          "Disposition_date": "5/8/2015 12:00:00 AM",
+          "Sentence_duration": "1"
+        }
+      ]
+    },
+    {
+      "Case_Number": "95CR0127401",
+      "Name": "DOE  JOHN",
+      "Date_of_Birth": "19700102",
+      "Gender": "M ",
+      "RD_Number": "Y123456",
+      "CB_Number": "9876543",
+      "SID_Number": "098765432",
+      "FBI_Number": "087654321",
+      "DFND_Ticket_NBR": null,
+      "ChargeDetails": [
+        {
+          "DCN": "9876543",
+          "Statute": "720-570/402(C)",
+          "Charge": "POSS AMT CON SUB EXCEPT(A",
+          "Sentence": "Probation",
+          "Sequence": "6",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "710-1410 Probation",
+          "Disposition_date": "1/27/1995 12:00:00 AM",
+          "Sentence_duration": "0"
+        },
+        {
+          "DCN": "9876543",
+          "Statute": "720-570/402(C)",
+          "Charge": "POSS AMT CON SUB EXCEPT(A",
+          "Sentence": "Probation",
+          "Sequence": "6",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "PG JW Finding Guilty",
+          "Disposition_date": "1/27/1995 12:00:00 AM",
+          "Sentence_duration": "0"
+        },
+        {
+          "DCN": "9876543",
+          "Statute": "720-570/402(C)",
+          "Charge": "POSS AMT CON SUB EXCEPT(A",
+          "Sentence": "Probation",
+          "Sequence": "6",
+          "Degree": "Class 4 Felony",
+          "Disposition_description": "Probation Terminated- Satisfactory",
+          "Disposition_date": "1/27/1995 12:00:00 AM",
+          "Sentence_duration": "0"
+        }
+      ]
+    }
+  ]
+}

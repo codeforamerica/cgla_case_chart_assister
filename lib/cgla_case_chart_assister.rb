@@ -11,10 +11,6 @@ require 'cgla_case_chart_assister/models/court_case'
 require 'cgla_case_chart_assister/models/disposition'
 require 'cgla_case_chart_assister/models/history'
 
-# Constants
-require 'cgla_case_chart_assister/constants/disqualified_code_sections'
-require 'cgla_case_chart_assister/constants/offense_classes'
-
 # Eligibility Flows
 require 'cgla_case_chart_assister/eligibility_flows/illinois_eligibility_flow'
 

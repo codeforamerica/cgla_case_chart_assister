@@ -6,8 +6,7 @@
 
 require 'csv'
 require 'logger'
-require 'cgla_case_chart_assister/eligibility_flows/illinois_eligibility_flow'
-require 'cgla_case_chart_assister/parsers/champaign_county_parser'
+require 'cgla_case_chart_assister'
 
 def build_output_file_path(input_file_path)
   input_file_name = input_file_path.split('/').last.split('.').first

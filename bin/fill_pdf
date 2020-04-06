@@ -9,11 +9,7 @@
 require 'csv'
 require 'logger'
 require 'pdf-forms'
-require 'cgla_case_chart_assister/models/history'
-require 'cgla_case_chart_assister/models/charge'
-require 'cgla_case_chart_assister/parsers/champaign_county_parser'
-require 'cgla_case_chart_assister/serializers/non_cook_pdf_serializer'
-
+require 'cgla_case_chart_assister'
 
 $pdftk = PdfForms.new
 

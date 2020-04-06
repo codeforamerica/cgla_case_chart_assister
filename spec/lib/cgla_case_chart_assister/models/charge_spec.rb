@@ -4,34 +4,70 @@ require 'cgla_case_chart_assister/models/charge'
 require 'cgla_case_chart_assister/models/disposition'
 
 RSpec.describe CglaCaseChartAssister::Charge do
-  let(:event) {CglaCaseChartAssister::Charge.new(dcn: 'L6748494', case_number: '2007-CM-000747')}
+  describe 'attributes' do
+    it 'has default attributes' do
+      event = CglaCaseChartAssister::Charge.new
 
-  describe "type" do
-    it 'returns :charge' do
-      expect(event.type).to eq(:charge)
+      expect(event.dispositions).to match_array([])
+    end
+
+    it 'makes attributes available on instance' do
+      event = CglaCaseChartAssister::Charge.new(
+        index: 1,
+        central_booking_number: 'booking-num',
+        case_number: 'case12345',
+        date_filed: '15-Oct-2019',
+        arresting_agency_code: 'arrest-123',
+        dcn: 'dcn123',
+        code: 'statute 1',
+        description: 'my charge',
+        offense_type: 'felony',
+        offense_class: 'class 4',
+        dispositions: ['foo']
+      )
+
+      expect(event.index).to eq(1)
+      expect(event.central_booking_number).to eq('booking-num')
+      expect(event.case_number).to eq('case12345')
+      expect(event.date_filed).to eq('15-Oct-2019')
+      expect(event.arresting_agency_code).to eq('arrest-123')
+      expect(event.dcn).to eq('dcn123')
+      expect(event.code).to eq('statute 1')
+      expect(event.description).to eq('my charge')
+      expect(event.offense_type).to eq('felony')
+      expect(event.offense_class).to eq('class 4')
+      expect(event.dispositions.count).to eq(1)
     end
   end
 
   describe '#pending_case?' do
     it 'returns true when neither disposition nor disposition date are populated' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: nil, date: nil)]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: nil, date: nil)]
+      )
       expect(event.pending_case?).to eq(true)
     end
 
     it 'returns false when disposition or disposition_date or both are populated' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: 'disposition', date: Date.today)]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: 'disposition', date: Date.today)]
+      )
       expect(event.pending_case?).to eq(false)
     end
   end
 
   describe 'pre_JANO?' do
     it 'returns true when the disposition is pre-JANO' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: 'Pre-JANO Disposition')]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: 'Pre-JANO Disposition')]
+      )
       expect(event.pre_JANO?).to eq(true)
     end
 
     it 'returns false when the disposition is anything else' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: 'blah')]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: 'blah')]
+      )
       expect(event.pre_JANO?).to eq(false)
     end
   end
@@ -53,46 +89,62 @@ RSpec.describe CglaCaseChartAssister::Charge do
     end
 
     it 'returns false if the disposition description is empty' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: nil)]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: nil)]
+      )
       expect(event.dismissed?).to eq(false)
     end
 
     it 'returns false when the disposition description is anything else' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: 'my fake disposition')]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: 'my fake disposition')]
+      )
       expect(event.dismissed?).to eq(false)
     end
   end
 
   describe 'acquitted?' do
     it 'returns true when the disposition is Not Guilty' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: 'Not Guilty')]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: 'Not Guilty')]
+      )
       expect(event.acquitted?).to eq(true)
     end
 
     it 'returns false if the disposition description is empty' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: nil)]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: nil)]
+      )
       expect(event.dismissed?).to eq(false)
     end
 
     it 'returns false when the disposition is anything else' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: 'my fake disposition')]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: 'my fake disposition')]
+      )
       expect(event.acquitted?).to eq(false)
     end
   end
 
   describe 'conviction?' do
     it 'returns true when the disposition is Guilty' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: 'Guilty')]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: 'Guilty')]
+      )
       expect(event.conviction?).to eq(true)
     end
 
     it 'returns false if the disposition description is empty' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: nil)]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: nil)]
+      )
       expect(event.dismissed?).to eq(false)
     end
 
     it 'returns false when the disposition is anything else' do
-      event.dispositions = [CglaCaseChartAssister::Disposition.new(description: 'my fake disposition')]
+      event = CglaCaseChartAssister::Charge.new(
+        dispositions: [CglaCaseChartAssister::Disposition.new(description: 'my fake disposition')]
+      )
       expect(event.conviction?).to eq(false)
     end
   end

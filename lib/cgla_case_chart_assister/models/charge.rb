@@ -1,25 +1,9 @@
 require 'cgla_case_chart_assister/constants/disqualified_code_sections'
+require 'cgla_case_chart_assister/models/event'
 
 module CglaCaseChartAssister
   # A charge only occurs for court cases (not arrests)
-  Charge = Struct.new(
-    :index,
-    :central_booking_number,
-    :case_number,
-    :date_filed,
-    :arresting_agency_code,
-    :dcn,
-    :code,
-    :description,
-    :offense_type,
-    :offense_class,
-    :dispositions,
-    keyword_init: true) do
-
-    def type
-      :charge
-    end
-
+  class Charge < Event
     def pending_case?
       dispositions&.all?{|disposition| disposition.description.nil? && disposition.date.nil? }
     end

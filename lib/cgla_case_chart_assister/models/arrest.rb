@@ -1,24 +1,8 @@
 require 'cgla_case_chart_assister/constants/disqualified_code_sections'
+require 'cgla_case_chart_assister/models/event'
 
 module CglaCaseChartAssister
-  Arrest = Struct.new(
-    :index,
-    :central_booking_number,
-    :case_number,
-    :date_filed,
-    :arresting_agency_code,
-    :dcn,
-    :code,
-    :description,
-    :offense_type,
-    :offense_class,
-    :dispositions,
-    keyword_init: true) do
-
-    def type
-      :arrest
-    end
-
+  class Arrest < Event
     def pending_case?
       false
     end

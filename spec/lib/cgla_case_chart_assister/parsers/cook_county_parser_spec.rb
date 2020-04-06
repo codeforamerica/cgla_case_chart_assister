@@ -42,7 +42,7 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
       charges = CglaCaseChartAssister::CookCountyParser.parse_charges(charge_details, case_number: '00CR1234567')
 
       expect(charges.length).to eq(2)
-      expect(charges.all?{|c| c.type == :charge}).to eq(true)
+      expect(charges.all?{|c| c.is_a?(CglaCaseChartAssister::Charge) }).to eq(true)
 
       expect(charges[0].index).to eq('1')
       expect(charges[0].case_number).to eq('00CR1234567')

@@ -30,7 +30,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
         }
         event = CglaCaseChartAssister::ChampaignCountyParser.parse_event(fake_row, 3)
 
-        expect(event.type).to eq(:charge)
+        expect(event).to be_a(CglaCaseChartAssister::Charge)
         expect(event.index).to eq(3)
         expect(event.central_booking_number).to eq(nil)
         expect(event.case_number).to eq('2007-CM-000747')
@@ -70,7 +70,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
         }
         event = CglaCaseChartAssister::ChampaignCountyParser.parse_event(fake_row, 3)
 
-        expect(event.type).to eq(:arrest)
+        expect(event).to be_a(CglaCaseChartAssister::Arrest)
         expect(event.index).to eq(3)
         expect(event.central_booking_number).to eq(nil)
         expect(event.case_number).to eq(nil)
@@ -81,7 +81,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
         expect(event.description).to eq('Knowingly Damage Prop<$300')
         expect(event.offense_type).to eq(nil)
         expect(event.offense_class).to eq(nil)
-        expect(event.dispositions).to eq(nil)
+        expect(event.dispositions.count).to eq(0)
       end
     end
 
@@ -285,9 +285,8 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
       expect(history.ir_number).to eq(nil)
       expect(history.dob).to eq('02-May-85')
       expect(history.events.length).to eq(2)
-      expect(history.events.first.type).to eq(:charge)
+      expect(history.events.first).to be_a(CglaCaseChartAssister::Charge)
       expect(history.court_cases.length).to eq(1)
-      expect(history.court_cases.first.type).to eq(:court_case)
       expect(history.court_cases.first.case_number).to eq('2007-CM-000747')
     end
 

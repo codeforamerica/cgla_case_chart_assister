@@ -90,7 +90,7 @@ Dir.glob("*.csv", base: path_to_directory) do |filename|
 
   case_chart_header_data = { client_name: history.person_name, IR_number: history.ir_number, dob: history.dob }
 
-  court_event_history = history.events.filter {|event| event.type == :charge}
+  court_event_history = history.events.filter {|event| event.is_a?(CglaCaseChartAssister::Charge) }
 
   sorted_court_history = court_event_history.sort_by do |e|
     final_disposition = e.dispositions.first

@@ -3,11 +3,24 @@ require 'cgla_case_chart_assister/models/charge'
 require 'cgla_case_chart_assister/models/disposition'
 
 RSpec.describe CglaCaseChartAssister::CourtCase do
-  describe 'type' do
-    it 'returns :court_case' do
-      expect(CglaCaseChartAssister::CourtCase.new.type).to eq(:court_case)
+  describe 'attributes' do
+    it 'has default attributes' do
+      event = CglaCaseChartAssister::CourtCase.new
+
+      expect(event.charges).to match_array([])
+    end
+
+    it 'makes attributes available on instance' do
+      event = CglaCaseChartAssister::CourtCase.new(
+        case_number: 'case12345',
+        charges: ['foo']
+      )
+
+      expect(event.case_number).to eq('case12345')
+      expect(event.charges.count).to eq(1)
     end
   end
+
 
   describe 'all_expungable?' do
     context 'when all the charges are dismissals or acquittals' do

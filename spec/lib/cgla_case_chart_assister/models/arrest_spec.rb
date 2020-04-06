@@ -3,9 +3,39 @@ require 'cgla_case_chart_assister/models/arrest'
 RSpec.describe CglaCaseChartAssister::Arrest do
   let(:arrest) {CglaCaseChartAssister::Arrest.new}
 
-  describe "type" do
-    it 'returns :arrest' do
-      expect(arrest.type).to eq(:arrest)
+  describe 'attributes' do
+    it 'has default attributes' do
+      event = CglaCaseChartAssister::Arrest.new
+
+      expect(event.dispositions).to match_array([])
+    end
+
+    it 'makes attributes available on instance' do
+      event = CglaCaseChartAssister::Arrest.new(
+          index: 1,
+          central_booking_number: 'booking-num',
+          case_number: 'case12345',
+          date_filed: '15-Oct-2019',
+          arresting_agency_code: 'arrest-123',
+          dcn: 'dcn123',
+          code: 'statute 1',
+          description: 'my charge',
+          offense_type: 'felony',
+          offense_class: 'class 4',
+          dispositions: ['foo']
+      )
+
+      expect(event.index).to eq(1)
+      expect(event.central_booking_number).to eq('booking-num')
+      expect(event.case_number).to eq('case12345')
+      expect(event.date_filed).to eq('15-Oct-2019')
+      expect(event.arresting_agency_code).to eq('arrest-123')
+      expect(event.dcn).to eq('dcn123')
+      expect(event.code).to eq('statute 1')
+      expect(event.description).to eq('my charge')
+      expect(event.offense_type).to eq('felony')
+      expect(event.offense_class).to eq('class 4')
+      expect(event.dispositions.count).to eq(1)
     end
   end
 

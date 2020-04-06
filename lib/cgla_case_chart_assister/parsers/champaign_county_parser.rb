@@ -70,7 +70,7 @@ module CglaCaseChartAssister
 
       def group_by_case_number(events)
         case_number_map = {}
-        events.select {|e| e.type == :charge}.each do |e|
+        events.select {|e| e.is_a?(CglaCaseChartAssister::Charge) }.each do |e|
           if case_number_map[e.case_number].nil?
             case_number_map[e.case_number] = [e]
           else

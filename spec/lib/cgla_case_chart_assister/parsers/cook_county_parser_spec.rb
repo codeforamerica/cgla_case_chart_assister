@@ -1,5 +1,5 @@
 require_relative '../../../support/fixture_helper'
-require 'cgla_case_chart_assister/parsers/cook_county_parser'
+require 'cgla_case_chart_assister'
 require 'json'
 require 'date'
 

@@ -1,4 +1,4 @@
-require 'cgla_case_chart_assister/parsers/champaign_county_parser'
+require 'cgla_case_chart_assister'
 
 RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
   let(:subject) { CglaCaseChartAssister::ChampaignCountyParser.new }

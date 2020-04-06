@@ -1,12 +1,11 @@
 require 'cgla_case_chart_assister'
 
 RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
-  let(:subject) { CglaCaseChartAssister::ChampaignCountyParser.new }
   describe 'parse_event' do
     context 'when a row is unusable (no DCN and no case number)' do
       it 'returns nil' do
         fake_row = {}
-        expect(subject.parse_event(fake_row, 3)).to be_nil
+        expect(CglaCaseChartAssister::ChampaignCountyParser.parse_event(fake_row, 3)).to be_nil
       end
     end
 
@@ -29,7 +28,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
           wp: nil,
           notes: nil
         }
-        event = subject.parse_event(fake_row, 3)
+        event = CglaCaseChartAssister::ChampaignCountyParser.parse_event(fake_row, 3)
 
         expect(event.type).to eq(:charge)
         expect(event.index).to eq(3)
@@ -69,7 +68,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
           wp: nil,
           notes: nil
         }
-        event = subject.parse_event(fake_row, 3)
+        event = CglaCaseChartAssister::ChampaignCountyParser.parse_event(fake_row, 3)
 
         expect(event.type).to eq(:arrest)
         expect(event.index).to eq(3)
@@ -104,7 +103,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
           wp: nil,
           notes: nil
         }
-        event = subject.parse_event(fake_row, 1)
+        event = CglaCaseChartAssister::ChampaignCountyParser.parse_event(fake_row, 1)
 
         expect(event.code).to eq('')
         expect(event.description).to eq('Criminal Trespass To Real Prop')
@@ -131,7 +130,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
           wp: nil,
           notes: nil
         }
-        event = subject.parse_event(fake_row, 1)
+        event = CglaCaseChartAssister::ChampaignCountyParser.parse_event(fake_row, 1)
 
         expect(event.code).to eq('720 5/21-1(1)(a)')
         expect(event.description).to eq('Knowingly Damage Prop<$300')
@@ -158,7 +157,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
           wp: nil,
           notes: nil
         }
-        event = subject.parse_event(fake_row, 1)
+        event = CglaCaseChartAssister::ChampaignCountyParser.parse_event(fake_row, 1)
 
         expect(event.code).to eq(nil)
         expect(event.description).to eq('Knowingly Damage Prop<$300')
@@ -228,7 +227,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
     )}
 
     it 'creates a court case for each case number' do
-      court_cases = subject.parse_court_cases([event1, event2, event3, event4])
+      court_cases = CglaCaseChartAssister::ChampaignCountyParser.parse_court_cases([event1, event2, event3, event4])
 
       expect(court_cases.length).to eq(2)
       expect(court_cases[0].case_number).to eq('2007-CM-000747')
@@ -236,7 +235,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
     end
 
     it 'assigns all court events with a given case number to that court case' do
-      court_cases = subject.parse_court_cases([event1, event2, event3, event4])
+      court_cases = CglaCaseChartAssister::ChampaignCountyParser.parse_court_cases([event1, event2, event3, event4])
 
       expect(court_cases.length).to eq(2)
       expect(court_cases[0].charges.length).to eq(2)
@@ -280,7 +279,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
         wp: nil,
         notes: nil
       }
-      history = subject.parse_history([row1, row2])
+      history = CglaCaseChartAssister::ChampaignCountyParser.parse_history([row1, row2])
 
       expect(history.person_name).to eq('CHIPMUNK, ALVIN')
       expect(history.ir_number).to eq(nil)
@@ -329,7 +328,7 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
         notes: nil
       }
 
-      history = subject.parse_history([row1, row2])
+      history = CglaCaseChartAssister::ChampaignCountyParser.parse_history([row1, row2])
 
       expect(history.person_name).to eq('CHIPMUNK, ALVIN')
       expect(history.ir_number).to eq(nil)

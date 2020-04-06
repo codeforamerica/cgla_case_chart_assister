@@ -84,9 +84,7 @@ Dir.glob("*.csv", base: path_to_directory) do |filename|
 
   history_rows = CSV.read(input_file_path, {headers: true, header_converters: :symbol})
 
-  parser = CglaCaseChartAssister::ChampaignCountyParser.new
-
-  history = parser.parse_history(history_rows)
+  history = CglaCaseChartAssister::ChampaignCountyParser.parse_history(history_rows)
 
   pending_case = history.has_pending_case?
 

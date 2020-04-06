@@ -4,12 +4,11 @@ require 'json'
 require 'date'
 
 RSpec.describe CglaCaseChartAssister::CookCountyParser do
-  let(:subject) { CglaCaseChartAssister::CookCountyParser.new }
   let(:cook_json) { JSON.parse(FixtureHelper.read_fixture('./spec/fixtures/cook_county.json')) }
 
   describe 'parse_history' do
     it 'returns a History that contains an Event of each analyzable row provided and corresponding CourtCases' do
-      history = subject.parse_history(cook_json)
+      history = CglaCaseChartAssister::CookCountyParser.parse_history(cook_json)
 
       expect(history.person_name).to eq('DOE, JOHN')
       expect(history.ir_number).to eq('5555555')
@@ -25,7 +24,7 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
   describe 'parse_court_cases' do
     let(:case_details) { cook_json['CaseDetails'] }
     it 'creates a court case for each case number' do
-      court_cases = subject.parse_court_cases(case_details)
+      court_cases = CglaCaseChartAssister::CookCountyParser.parse_court_cases(case_details)
 
       expect(court_cases.length).to eq(3)
       expect(court_cases[0].case_number).to eq('00CR1234567')
@@ -40,7 +39,7 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
   describe 'parse_charges' do
     let(:charge_details) { cook_json['CaseDetails'][0]['ChargeDetails'] }
     it 'creates a charge for every unique sequence in ChargeDetails' do
-      charges = subject.parse_charges(charge_details, case_number: '00CR1234567')
+      charges = CglaCaseChartAssister::CookCountyParser.parse_charges(charge_details, case_number: '00CR1234567')
 
       expect(charges.length).to eq(2)
       expect(charges.all?{|c| c.type == :charge}).to eq(true)

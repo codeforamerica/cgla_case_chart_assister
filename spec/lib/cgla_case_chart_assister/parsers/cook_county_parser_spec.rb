@@ -14,9 +14,9 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
         expect(history.person_name).to eq('DOE, JOHN')
         expect(history.ir_number).to eq('5555555')
         expect(history.dob).to eq(Date.parse('1970-01-03'))
-        expect(history.events.length).to eq(5)
+        expect(history.events.length).to eq(6)
         expect(history.events.first).to be_a(CglaCaseChartAssister::Charge)
-        expect(history.court_cases.length).to eq(3)
+        expect(history.court_cases.length).to eq(4)
         expect(history.court_cases.first.case_number).to eq('00CR1234567')
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
     it 'creates a court case for each case number' do
       court_cases = CglaCaseChartAssister::CookCountyParser.parse_court_cases(case_details)
 
-      expect(court_cases.length).to eq(3)
+      expect(court_cases.length).to eq(4)
       expect(court_cases[0].case_number).to eq('00CR1234567')
       expect(court_cases[0].charges.length).to eq(2)
       expect(court_cases[1].case_number).to eq('14CR0123456')
@@ -68,7 +68,7 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
       expect(charges[0].offense_class).to eq(nil)
       expect(charges[0].dispositions.length).to eq(1)
       expect(charges[0].dispositions.first.description).to eq(nil)
-      expect(charges[0].dispositions.first.date).to eq(Date.parse('2000-10-18'))
+      expect(charges[0].dispositions.first.date).to eq(DateTime.new(2000,10,18,0,0,0))
       expect(charges[0].dispositions.first.sentence_description).to eq('Probation')
       expect(charges[0].dispositions.first.sentence_duration).to eq('0')
 
@@ -81,7 +81,7 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
       expect(charges[1].offense_class).to eq('4')
       expect(charges[1].dispositions.length).to eq(3)
       expect(charges[1].dispositions.first.description).to eq('Finding of Guilty')
-      expect(charges[1].dispositions.first.date).to eq(Date.parse('2000-10-18'))
+      expect(charges[1].dispositions.first.date).to eq(DateTime.new(2000,10,18,0,0,0))
       expect(charges[1].dispositions.first.sentence_description).to eq('Probation')
       expect(charges[1].dispositions.first.sentence_duration).to eq('0')
     end

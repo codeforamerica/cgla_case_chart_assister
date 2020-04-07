@@ -3,7 +3,6 @@ require 'cgla_case_chart_assister/models/court_case'
 require 'cgla_case_chart_assister/models/disposition'
 require 'cgla_case_chart_assister/models/history'
 require 'cgla_case_chart_assister/constants/offense_classes'
-require 'date'
 
 module CglaCaseChartAssister
   class CookCountyParser
@@ -76,7 +75,7 @@ module CglaCaseChartAssister
             case_number: case_number,
             charge_index: charge_event['Sequence'],
             description: charge_event['Disposition_description'],
-            date: Date.parse(format_disposition_date(charge_event['Disposition_date'])),
+            date: parse_disposition_date(charge_event['Disposition_date']),
             sentence_description: charge_event['Sentence'],
             sentence_duration: charge_event['Sentence_duration']
           )
@@ -84,12 +83,10 @@ module CglaCaseChartAssister
         dispositions
       end
 
-      def format_disposition_date(disposition_date)
-        date_array = disposition_date.split(' ')[0].split('/')
-        year = date_array.pop
-        date_array.reverse!
-        date_array << year
-        date_array.join('-')
+      def parse_disposition_date(disposition_date)
+        return if disposition_date.nil? || disposition_date.empty?
+
+        DateTime.strptime(disposition_date, '%m/%d/%Y %I:%M:%S %p')
       end
     end
   end

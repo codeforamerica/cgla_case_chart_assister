@@ -31,6 +31,7 @@ module CglaCaseChartAssister
           CourtCase.new(
             case_number: case_details['Case_Number'],
             person_name: parse_name(case_details['Name']),
+            central_booking_number: case_details['CB_Number'],
             charges: parse_charges(case_details['ChargeDetails'], case_number: case_details['Case_Number'])
           )
         end

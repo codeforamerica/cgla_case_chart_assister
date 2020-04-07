@@ -171,6 +171,30 @@
           "Sentence_duration": "0"
         }
       ]
+    },
+    {
+      "Case_Number": "00113380301",
+      "Name": "DOE  JOHN",
+      "Date_of_Birth": "19700103",
+      "Gender": "M ",
+      "RD_Number": "F-11111",
+      "CB_Number": "012345678",
+      "SID_Number": null,
+      "FBI_Number": null,
+      "DFND_Ticket_NBR": null,
+      "ChargeDetails": [
+        {
+          "DCN": "014555555",
+          "Statute": "720-570.0/402-A-10",
+          "Charge": "POSS. CONTROL SUBST - PCP",
+          "Sentence": null,
+          "Sequence": "3",
+          "Degree": "Class 1 Felony",
+          "Disposition_description": "Superceded by Direct Indictment",
+          "Disposition_date": null,
+          "Sentence_duration": null
+        }
+      ]
     }
   ]
 }

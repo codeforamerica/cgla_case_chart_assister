@@ -12,10 +12,12 @@ RSpec.describe CglaCaseChartAssister::CourtCase do
 
     it 'makes attributes available on instance' do
       event = CglaCaseChartAssister::CourtCase.new(
+        person_name: 'Person McPerson',
         case_number: 'case12345',
         charges: ['foo']
       )
 
+      expect(event.person_name).to eq('Person McPerson')
       expect(event.case_number).to eq('case12345')
       expect(event.charges.count).to eq(1)
     end

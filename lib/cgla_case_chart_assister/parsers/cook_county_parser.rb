@@ -17,7 +17,7 @@ module CglaCaseChartAssister
           History.new(ir_number: history_json['IR_number'])
         else
           History.new(
-            person_name: parse_name(case_details[0]['Name']),
+            person_name: court_cases.first.person_name,
             ir_number: history_json['IR_number'],
             dob: Date.parse(case_details[0]['Date_of_Birth']),
             events: all_charges,
@@ -30,6 +30,7 @@ module CglaCaseChartAssister
         case_details_array.map do |case_details|
           CourtCase.new(
             case_number: case_details['Case_Number'],
+            person_name: parse_name(case_details['Name']),
             charges: parse_charges(case_details['ChargeDetails'], case_number: case_details['Case_Number'])
           )
         end

@@ -2,14 +2,16 @@ module CglaCaseChartAssister
   class CourtCase
     def initialize(
       case_number: nil,
+      person_name: nil,
       charges: []
     )
 
       @case_number = case_number
+      @person_name = person_name
       @charges = charges
     end
 
-    attr_reader :case_number, :charges
+    attr_reader :case_number, :person_name, :charges
 
     def all_expungable?
       charges.all?(&:eligible_for_expungement?)

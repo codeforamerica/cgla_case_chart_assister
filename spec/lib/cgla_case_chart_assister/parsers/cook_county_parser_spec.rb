@@ -43,10 +43,13 @@ RSpec.describe CglaCaseChartAssister::CookCountyParser do
 
       expect(court_cases.length).to eq(4)
       expect(court_cases[0].case_number).to eq('00CR1234567')
+      expect(court_cases[0].person_name).to eq('DOE, JOHN')
       expect(court_cases[0].charges.length).to eq(2)
       expect(court_cases[1].case_number).to eq('14CR0123456')
+      expect(court_cases[1].person_name).to eq('DOE, JOHN')
       expect(court_cases[1].charges.length).to eq(2)
       expect(court_cases[2].case_number).to eq('95CR0127401')
+      expect(court_cases[2].person_name).to eq('DOE, JOHN')
       expect(court_cases[2].charges.length).to eq(1)
     end
   end

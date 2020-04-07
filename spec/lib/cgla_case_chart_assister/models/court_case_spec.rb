@@ -14,11 +14,13 @@ RSpec.describe CglaCaseChartAssister::CourtCase do
       event = CglaCaseChartAssister::CourtCase.new(
         person_name: 'Person McPerson',
         case_number: 'case12345',
+        central_booking_number: 'booking1234',
         charges: ['foo']
       )
 
       expect(event.person_name).to eq('Person McPerson')
       expect(event.case_number).to eq('case12345')
+      expect(event.central_booking_number).to eq('booking1234')
       expect(event.charges.count).to eq(1)
     end
   end

@@ -32,7 +32,6 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
 
         expect(event).to be_a(CglaCaseChartAssister::Charge)
         expect(event.index).to eq(3)
-        expect(event.central_booking_number).to eq(nil)
         expect(event.case_number).to eq('2007-CM-000747')
         expect(event.date_filed).to eq('05-Jul-2007')
         expect(event.arresting_agency_code).to eq('Toon County Sheriff')
@@ -72,7 +71,6 @@ RSpec.describe CglaCaseChartAssister::ChampaignCountyParser do
 
         expect(event).to be_a(CglaCaseChartAssister::Arrest)
         expect(event.index).to eq(3)
-        expect(event.central_booking_number).to eq(nil)
         expect(event.case_number).to eq(nil)
         expect(event.date_filed).to eq('05-Jul-2007')
         expect(event.arresting_agency_code).to eq('Toon County Sheriff')

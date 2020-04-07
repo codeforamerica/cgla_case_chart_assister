@@ -4,7 +4,6 @@ module CglaCaseChartAssister
   class Event
     def initialize(
         index: nil,
-        central_booking_number: nil,
         case_number: nil,
         date_filed: nil,
         arresting_agency_code: nil,
@@ -17,7 +16,6 @@ module CglaCaseChartAssister
     )
 
       @index = index
-      @central_booking_number = central_booking_number
       @case_number = case_number
       @date_filed = date_filed
       @arresting_agency_code = arresting_agency_code
@@ -29,8 +27,7 @@ module CglaCaseChartAssister
       @dispositions = dispositions
     end
 
-    attr_reader :index, :central_booking_number, :case_number, :date_filed,
-                :arresting_agency_code, :dcn, :code, :description, :offense_type,
-                :offense_class, :dispositions
+    attr_reader :index, :case_number, :date_filed, :arresting_agency_code, :dcn,
+                :code, :description, :offense_type, :offense_class, :dispositions
   end
 end

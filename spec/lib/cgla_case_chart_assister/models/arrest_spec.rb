@@ -13,7 +13,6 @@ RSpec.describe CglaCaseChartAssister::Arrest do
     it 'makes attributes available on instance' do
       event = CglaCaseChartAssister::Arrest.new(
           index: 1,
-          central_booking_number: 'booking-num',
           case_number: 'case12345',
           date_filed: '15-Oct-2019',
           arresting_agency_code: 'arrest-123',
@@ -26,7 +25,6 @@ RSpec.describe CglaCaseChartAssister::Arrest do
       )
 
       expect(event.index).to eq(1)
-      expect(event.central_booking_number).to eq('booking-num')
       expect(event.case_number).to eq('case12345')
       expect(event.date_filed).to eq('15-Oct-2019')
       expect(event.arresting_agency_code).to eq('arrest-123')
